@@ -21,7 +21,7 @@ public class SelfRotation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxSpeed = 1000;
+        maxSpeed = 50;
         speed = 0;
     }
 
@@ -29,7 +29,7 @@ public class SelfRotation : MonoBehaviour
     void Update()
     {
 
-        speed += Time.deltaTime + accelerationSpeed;
+        speed += Time.deltaTime * accelerationSpeed;
         if (speed >= maxSpeed) speed = maxSpeed;
 
         transform.Rotate(Vector3.up * Time.deltaTime * speed);

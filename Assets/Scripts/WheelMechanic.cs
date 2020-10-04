@@ -29,7 +29,7 @@ public class WheelMechanic : MonoBehaviour
             player = GameObject.Find("Player").GetComponent<Player>();
         }
 
-        maxSpeed = 1000;
+        maxSpeed = 100;
         speed = 0;
     }
 

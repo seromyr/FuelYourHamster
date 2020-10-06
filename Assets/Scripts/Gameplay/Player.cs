@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using Constants;
 
 public class Player : MonoBehaviour
 {
@@ -36,9 +37,6 @@ public class Player : MonoBehaviour
     private float lowJumpMultiplier;
     private Rigidbody rb;
 
-    // Dodge mechanic
-    [Serializable]
-    private enum Side { none, left, right, }
     [SerializeField]
     private Side dodgeSide;
     private Vector3 initLocalPos;
@@ -183,7 +181,6 @@ public class Player : MonoBehaviour
         {
             return false;
         }
-
     }
 
     private void Dodge()

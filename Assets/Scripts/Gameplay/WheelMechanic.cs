@@ -46,7 +46,6 @@ public class WheelMechanic : MonoBehaviour
         {
             speed += Time.deltaTime * accelerationSpeed;
             if (speed >= maxSpeed) speed = maxSpeed;
-
         }
         else
         {

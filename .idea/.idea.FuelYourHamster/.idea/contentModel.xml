@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Owner\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Owner\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\Rider\v202\SolutionCaches\_FuelYourHamster.-455546825.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Owner\Documents\GitHub\FuelYourHamster" t="IncludeRecursive">
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="CustomShaders" t="Include">
+          <e p="Unused Shader" t="Include">
+            <e p="DepthOnlyPass.hlsl" t="Include" />
+            <e p="SurfaceInput.hlsl" t="Include" />
+            <e p="UnlitInput.hlsl" t="Include" />
+            <e p="UnlitMetaPass.hlsl" t="Include" />
+            <e p="UnlitSprite.shader" t="Include" />
+          </e>
+        </e>
+        <e p="Scripts" t="Include">
+          <e p="GameManager.cs" t="Include" />
+          <e p="Gameplay" t="Include">
+            <e p="ChangeObject.cs" t="Include" />
+            <e p="CoffeeMeterMechanic.cs" t="Include" />
+            <e p="CollectableCollisionCheck.cs" t="Include" />
+            <e p="CollectablePool.cs" t="Include" />
+            <e p="HealthMechanic.cs" t="Include" />
+            <e p="Player.cs" t="Include" />
+            <e p="ProgressMeter.cs" t="Include" />
+            <e p="Randomize.cs" t="Include" />
+            <e p="SelfRotation.cs" t="Include" />
+            <e p="Speedometer.cs" t="Include" />
+            <e p="WheelMechanic.cs" t="Include" />
+          </e>
+          <e p="Graphic" t="Include">
+            <e p="SpriteShadowEnabler.cs" t="Include" />
+          </e>
+          <e p="UI" t="Include">
+            <e p="PlayGame.cs" t="Include" />
+            <e p="SelfFading.cs" t="Include" />
+            <e p="SelfScrolling.cs" t="Include" />
+            <e p="SimpleCameraController.cs" t="Include" />
+            <e p="SimplePatrol.cs" t="Include" />
+            <e p="UI_Panel_Slider.cs" t="Include" />
+          </e>
+        </e>
+        <e p="TextMesh Pro" t="Include">
+          <e p="Fonts" t="Include">
+            <e p="LiberationSans - OFL.txt" t="Include" />
+          </e>
+          <e p="Resources" t="Include">
+            <e p="LineBreaking Following Characters.txt" t="Include" />
+            <e p="LineBreaking Leading Characters.txt" t="Include" />
+          </e>
+          <e p="Shaders" t="Include">
+            <e p="TMP_Bitmap-Custom-Atlas.shader" t="Include" />
+            <e p="TMP_Bitmap-Mobile.shader" t="Include" />
+            <e p="TMP_Bitmap.shader" t="Include" />
+            <e p="TMP_SDF Overlay.shader" t="Include" />
+            <e p="TMP_SDF SSD.shader" t="Include" />
+            <e p="TMP_SDF-Mobile Masking.shader" t="Include" />
+            <e p="TMP_SDF-Mobile Overlay.shader" t="Include" />
+            <e p="TMP_SDF-Mobile SSD.shader" t="Include" />
+            <e p="TMP_SDF-Mobile.shader" t="Include" />
+            <e p="TMP_SDF-Surface-Mobile.shader" t="Include" />
+            <e p="TMP_SDF-Surface.shader" t="Include" />
+            <e p="TMP_SDF.shader" t="Include" />
+            <e p="TMP_Sprite.shader" t="Include" />
+            <e p="TMPro.cginc" t="Include" />
+            <e p="TMPro_Mobile.cginc" t="Include" />
+            <e p="TMPro_Properties.cginc" t="Include" />
+            <e p="TMPro_Surface.cginc" t="Include" />
+          </e>
+          <e p="Sprites" t="Include">
+            <e p="EmojiOne Attribution.txt" t="Include" />
+          </e>
+        </e>
+        <e p="TutorialInfo" t="Include">
+          <e p="Scripts" t="Include">
+            <e p="Editor" t="Include">
+              <e p="ReadmeEditor.cs" t="Include" />
+            </e>
+            <e p="Readme.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="FuelYourHamster.sln" t="IncludeFlat" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="Packages" t="ExcludeRecursive" />
+      <e p="Temp\bin" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>

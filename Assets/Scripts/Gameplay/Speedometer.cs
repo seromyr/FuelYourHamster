@@ -11,9 +11,15 @@ public class Speedometer : MonoBehaviour
     private float ZERO_ANGLE;
     private float rotationSpeed;
     
-    // placeholder hamster variables
+    // gameplay variables
+    private WheelMechanic wheel;
+    [SerializeField]
     private float speed;
+    [SerializeField]
+    private float speedMph;
+    [SerializeField]
     private float distance;
+    
 
     // enums for different speeds and their proper rotations for the display
     private enum Speed { Zero = -125, Twenty = -94, Forty = -65, Sixty = -35, Eighty = 0, Hundred = 32, HundredTwenty = 64, HundredForty = 94 };
@@ -22,7 +28,7 @@ public class Speedometer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = 0;
+        wheel = GameObject.Find("Wheel").GetComponent<WheelMechanic>();
         distance = 0;
         
         // set speed/rotation/angle stuff
@@ -36,31 +42,31 @@ public class Speedometer : MonoBehaviour
     {
         // get/update current distance and update display
         if (speed > 0) distance += speed/60 * Time.deltaTime;
-        distanceDisplay.text = "" + distance;
+        distanceDisplay.text = distance.ToString();
 
-        // change target based on input
-        if (Input.GetKeyDown(KeyCode.UpArrow)) SpeedUp();
-        if (Input.GetKeyDown(KeyCode.DownArrow)) SpeedDown();
+        // determine the MPH number based on rotation speed
+        TranslateSpeed();
         
+        // change rotation based on speedMPH
+        UpdateTargetRotation();
+
         // rotate needle towards target display speed
         needleTransform.localRotation = Quaternion.Lerp(needleTransform.localRotation, Quaternion.Euler((float)targetRotation, 0 , 0), rotationSpeed * Time.deltaTime);
     }
-
-    public void SpeedUp()
+    
+    public void TranslateSpeed()
     {
-        if (speed < 140)  speed += 20;
-        UpdateTargetRotation();
-    }
-
-    public void SpeedDown()
-    {
-        if (speed != 0) speed -= 20;
-        UpdateTargetRotation();
+        speed = wheel.Speed;
+        
+        if (speed > 0 && speed <= 50) speedMph = 20;
+        else if (speed > 50 && speed <= 100) speedMph = 40;
+        else speedMph = 0;
+        // etc.....
     }
 
     private void UpdateTargetRotation()
     {
-        switch (speed)
+        switch (speedMph)
         {
             case 0: targetRotation = Speed.Zero; break;
             case 20: targetRotation = Speed.Twenty; break;

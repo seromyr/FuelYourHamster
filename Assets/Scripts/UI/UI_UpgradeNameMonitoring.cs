@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Constants;
 
 public class UI_UpgradeNameMonitoring : MonoBehaviour
 {
@@ -26,19 +27,19 @@ public class UI_UpgradeNameMonitoring : MonoBehaviour
     {
         switch (transform.parent.name)
         {
-            case "Stat_00":
+            case StatID._01:
                 statID = 0;
                 break;
-            case "Stat_01":
+            case StatID._02:
                 statID = 1;
                 break;
-            case "Stat_02":
+            case StatID._03:
                 statID = 2;
                 break;
-            case "Stat_03":
+            case StatID._04:
                 statID = 3;
                 break;
-            case "Stat_04":
+            case StatID._05:
                 statID = 4;
                 break;
         }

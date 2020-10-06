@@ -6,6 +6,17 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // Gameplay Variables
+    [SerializeField]
+    private int health;
+    public int Health { get { return health; } }
+    [SerializeField]
+    private int maxHealth;
+    public int MaxHealth { get { return maxHealth; } }
+    // [SerializeField]
+    // private float speed;
+    // public float Speed { get { return speed; } }
+    
     // Input Configurations
     [SerializeField, Header("Input Configurations")]
     private KeyCode jump;
@@ -60,6 +71,10 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        // health info
+        maxHealth = 2;
+        health = maxHealth;
+        
         // Initialize jump mechanic parameters
         fallMultiplier = 2.5f;
         lowJumpMultiplier = 2f;
@@ -197,13 +212,13 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Collectable"))
         {
-            //Debug.Log("Hit " + other.name);
+            if (health > 0) health -= 1;
             StartCoroutine(ColorSwitch(Color.white, hitColor));
         }
 
         if (other.CompareTag("GoodCollectable"))
         {
-            //Debug.Log("Hit " + other.name);
+            //if (health < maxHealth) health += 1;
             StartCoroutine(ColorSwitch(Color.white, collectColor));
         }
     }

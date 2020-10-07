@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Constants;
 
-public class UI_PlayGame : MonoBehaviour
+public class UI_Upgrade : MonoBehaviour
 {
     private GameManager gameManager;
     private Button button;
@@ -13,10 +13,10 @@ public class UI_PlayGame : MonoBehaviour
     {
         gameManager = GameObject.Find(PrimeObj.GAMEMANAGER).GetComponent<GameManager>();
         button = GetComponent<Button>();
-        button.onClick.AddListener(NewGame);
+        button.onClick.AddListener(ShowUpgade);
     }
-    public void NewGame()
+    public void ShowUpgade()
     {
-        gameManager.NewGame();
+        gameManager.PauseGame();
     }
 }

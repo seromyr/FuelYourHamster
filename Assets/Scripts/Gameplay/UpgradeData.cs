@@ -2,32 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 // This class holds all the upgrade data
 public class UpgradeData : MonoBehaviour
 {
-    [Serializable]
-    public struct UpgradeStat
-    {
-        // Name of the stat which will be shown in the upgrade UI
-        public string name;
-
-        // The cost of the next upgrade purchase
-        public int cost;
-
-        // The cost increase after each purchase
-        public int nextCosst;
-
-        // The maximum number of upgrade that this stat has
-        public int maxLevel;
-
-        // The current upgrade level that player has
-        public int level;
-
-        // The state that this upgrade is available to purchase (player has enough money)
-        public bool available;
-    }
-
     [SerializeField]
     private UpgradeStat[] stats;
     public UpgradeStat[] Stats { get { return stats; } }

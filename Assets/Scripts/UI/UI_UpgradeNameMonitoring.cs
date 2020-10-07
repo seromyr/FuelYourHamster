@@ -17,7 +17,6 @@ public class UI_UpgradeNameMonitoring : MonoBehaviour
         GetUpgradeStatID();
     }
 
-    // Update is called once per frame
     void Update()
     {
         textField.text = gameManager.UpgradeData.Stats[statID].name;

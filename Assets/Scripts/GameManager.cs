@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameState gameState;
     [SerializeField]
-    private bool stateWorking;
+    private bool stateWorkingContinously;
 
     private string currentScene;
 
@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         PreloadSetup();
 
         // No state switching occurence
-        stateWorking = false;
+        stateWorkingContinously = false;
     }
 
     void Start()
@@ -109,7 +109,7 @@ public class GameManager : MonoBehaviour
                 // Switch state to playing
                 gameState = GameState.Playing;
 
-                stateWorking = true;
+                stateWorkingContinously = true;
 
                 // Find Player
                 player = GameObject.Find(PrimeObj.PLAYER).GetComponent<Player>();
@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (stateWorking)
+        if (stateWorkingContinously)
         {
             GameStateMonitoring();
         }
@@ -140,19 +140,18 @@ public class GameManager : MonoBehaviour
         {
             case GameState.Start:
                 SceneManager.LoadScene(SceneName.MAINMENU);
-                stateWorking = false;
+                stateWorkingContinously = false;
                 break;
 
             case GameState.New:
                 SceneManager.LoadScene(SceneName.GAME);
-                stateWorking = false;
+                
                 break;
 
             case GameState.Playing:
-                // This is me (Buu) cheating, remind me to change this later
-                upgradeMenu.transform.Find("Panel").GetComponent<UI_Panel_Slider>().ScrollOut();
+                //upgradeMenu.GetComponent<UI_Panel_Slider>().ScrollOut();
+                upgradeMenu.enabled = false;
 
-                // Not cheat
                 CheckUpgradeAvailability();
                 CheckPlayerHealth();
 
@@ -160,16 +159,17 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.Pausing:
-                // This is me (Buu) cheating, remind me to change this later
-                upgradeMenu.transform.Find("Panel").GetComponent<UI_Panel_Slider>().ScrollIn();
-                stateWorking = false;
+                //upgradeMenu.GetComponent<UI_Panel_Slider>().ScrollIn();
+                upgradeMenu.enabled = true;
+                stateWorkingContinously = false;
+
                 break;
 
             case GameState.Lose:
                 // Show lose game screen
                 gameOverMenu.enabled = true;
 
-                stateWorking = true;
+                stateWorkingContinously = false;
                 break;
         }
     }
@@ -197,30 +197,32 @@ public class GameManager : MonoBehaviour
     // PUBLIC METHODS
     public void GameStart()
     {
-        stateWorking = true;
+        stateWorkingContinously = true;
         gameState = GameState.Start;
     }
 
     public void NewGame()
     {
-        stateWorking = true;
+        stateWorkingContinously = true;
         gameState = GameState.New;
     }
 
     public void PauseGame()
     {
+        stateWorkingContinously = true;
         gameState = GameState.Pausing;
     }
 
     public void UnPauseGame()
     {
-        stateWorking = true;
-        gameState = GameState.Playing;
+        stateWorkingContinously = true;
+        gameState = GameState.New;
+        player.ResetHealth();
     }
 
     public void LoseGame()
     {
-        stateWorking = true;
+        stateWorkingContinously = true;
         gameState = GameState.Lose;
     }
 

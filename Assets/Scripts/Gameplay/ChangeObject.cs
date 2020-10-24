@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Constants;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,52 +21,45 @@ public class ChangeObject : MonoBehaviour
     // Actual lane in gameplay
     private SpawnLane laneInner, laneMid, laneOuter;
 
+    // Pool of Collectibles reference
+    private List<Sprite> goodPool, badPool;
+
     void Start()
     {
+        goodPool = GameObject.Find("CollectiblePool").GetComponent<MutationPool>().Beneficials;
+        badPool = GameObject.Find("CollectiblePool").GetComponent<MutationPool>().Harmfuls;
+
         // Construct lanes
         // In each set, a new game object is construct with suitable components and settings to make it become
         // a receptor that change the object sprite each time of passing by 
-        laneOuter = new SpawnLane();
-        laneOuter.name = "OuterLane";
-        laneOuter.body = new GameObject(laneOuter.name);
-        laneOuter.body.transform.SetParent(transform);
-        laneOuter.body.transform.localScale = new Vector3(0.5f, 1, 1);
-        laneOuter.body.transform.localPosition = new Vector3(0.9f, 0, 0);
-        laneOuter.triggerZone = laneOuter.body.AddComponent<BoxCollider>();
-        laneOuter.triggerZone.isTrigger = true;
-        laneOuter.random = laneOuter.body.AddComponent<Randomize>();
-        laneOuter.harmfulObjectPool = GameObject.Find("CollectablePool").GetComponent<CollectablePool>().HarmfulSpritePool;
-        laneOuter.beneficialObjectPool = GameObject.Find("CollectablePool").GetComponent<CollectablePool>().BeneficialSpritePool;
-        laneOuter.switchObject = laneOuter.body.AddComponent<CollectableCollisionCheck>();
-        laneOuter.nextSprite = laneOuter.random.RandomizeMe(laneOuter.harmfulObjectPool);
-        // ---
-        laneMid = new SpawnLane();
-        laneMid.name = "MiddleLane";
-        laneMid.body = new GameObject(laneMid.name);
-        laneMid.body.transform.SetParent(transform);
-        laneMid.body.transform.localScale = new Vector3(0.5f, 1, 1);
-        laneMid.body.transform.localPosition = Vector3.zero;
-        laneMid.triggerZone = laneMid.body.AddComponent<BoxCollider>();
-        laneMid.triggerZone.isTrigger = true;
-        laneMid.random = laneMid.body.AddComponent<Randomize>();
-        laneMid.harmfulObjectPool = GameObject.Find("CollectablePool").GetComponent<CollectablePool>().HarmfulSpritePool;
-        laneMid.beneficialObjectPool = GameObject.Find("CollectablePool").GetComponent<CollectablePool>().BeneficialSpritePool;
-        laneMid.switchObject = laneMid.body.AddComponent<CollectableCollisionCheck>();
-        laneMid.nextSprite = laneMid.random.RandomizeMe(laneOuter.harmfulObjectPool);
-        // ---
-        laneInner = new SpawnLane();
-        laneInner.name = "InnerLane";
-        laneInner.body = new GameObject(laneInner.name);
-        laneInner.body.transform.SetParent(transform);
-        laneInner.body.transform.localScale = new Vector3(0.5f, 1, 1);
-        laneInner.body.transform.localPosition = new Vector3(-0.8f, 0, 0);
-        laneInner.triggerZone = laneInner.body.AddComponent<BoxCollider>();
-        laneInner.triggerZone.isTrigger = true;
-        laneInner.random = laneInner.body.AddComponent<Randomize>();
-        laneInner.harmfulObjectPool = GameObject.Find("CollectablePool").GetComponent<CollectablePool>().HarmfulSpritePool;
-        laneInner.beneficialObjectPool = GameObject.Find("CollectablePool").GetComponent<CollectablePool>().BeneficialSpritePool;
-        laneInner.switchObject = laneInner.body.AddComponent<CollectableCollisionCheck>();
-        laneInner.nextSprite = laneInner.random.RandomizeMe(laneOuter.harmfulObjectPool);
+
+        //--------------- name -------- size ------------------- position ------------ out parameters
+        ConstructLane("OuterLane",  Vector3.one, new Vector3(2.25f, 0, 0),    out laneOuter);
+        ConstructLane("MiddleLane", Vector3.one,     Vector3.zero,           out laneMid);
+        ConstructLane("InnerLane",  Vector3.one, new Vector3(-2.25f, 0, 0),   out laneInner);
+    }
+
+    private void ConstructLane(string name, Vector3 localScale, Vector3 localPosition, out SpawnLane lane)
+    {
+        lane = new SpawnLane();
+        lane.name = name;
+
+        lane.body = new GameObject(lane.name);
+        lane.body.transform.SetParent(transform);
+        lane.body.tag = TAG.SPAWNCOLLIDER;
+
+        lane.body.transform.localScale = localScale;
+        lane.body.transform.localPosition = localPosition;
+
+        lane.triggerZone = lane.body.AddComponent<BoxCollider>();
+        lane.triggerZone.isTrigger = true;
+
+        lane.random = lane.body.AddComponent<Randomize>();
+
+        lane.harmfulObjectPool = badPool;
+        lane.beneficialObjectPool = goodPool;
+        //lane.switchObject = lane.body.AddComponent<CollectableCollisionCheck>();
+        lane.nextSprite = lane.random.RandomizeMe(lane.harmfulObjectPool);
     }
 
     void Update()

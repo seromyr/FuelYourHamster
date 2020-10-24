@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using Constants;
 
@@ -22,7 +21,9 @@ public class Player : MonoBehaviour
     [SerializeField, Header("Input Configurations")]
     private KeyCode jump;
     [SerializeField]
-    private KeyCode dodge;
+    private KeyCode dodgeLeft;
+    [SerializeField]
+    private KeyCode dodgeRight;
     [SerializeField]
     private KeyCode serveCoffee;
     [SerializeField]
@@ -62,6 +63,10 @@ public class Player : MonoBehaviour
     [SerializeField, Header("How fast could I digest all this?")]
     private float consumingSpeed;
 
+    // Player get access to vault
+    private ObjectReserve.Vault vault01, vault02, vault03;
+    private string currentVaultName;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -91,8 +96,14 @@ public class Player : MonoBehaviour
         caffeineMinLevel = 0;
         coffeePerServing = 20;
 
-        // Player start with little caffeine in its blood
-        caffeineLevel = caffeineMinLevel + 30;
+        // Player start with some caffeine in its blood
+        caffeineLevel = 50;
+
+        consumingSpeed = 1;
+
+        vault01 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault01;
+        vault02 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault02;
+        vault03 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault03;
     }
 
     private void Update()
@@ -113,7 +124,10 @@ public class Player : MonoBehaviour
         {
             caffeineLevel = 0;
         }
+    }
 
+    private void FixedUpdate()
+    {
         // Jump!
         Jump();
 
@@ -168,14 +182,15 @@ public class Player : MonoBehaviour
 
     private bool RequestDodge()
     {
-        if (Input.GetKey(dodge))
+        if (Input.GetKey(dodgeLeft))
         {
-            return Input.GetKey(dodge);
+            dodgeSide = Side.Left;
+            return Input.GetKey(dodgeLeft);
         }
-        else if (Input.GetKeyUp(dodge))
+        else if (Input.GetKey(dodgeRight))
         {
-            dodgeSide = (Side)UnityEngine.Random.Range(1, 3);
-            return false;
+            dodgeSide = Side.Right;
+            return Input.GetKey(dodgeRight);
         }
         else
         {
@@ -187,36 +202,92 @@ public class Player : MonoBehaviour
     {
         if (RequestDodge())
         {
-            if (dodgeSide == Side.left)
+            if (dodgeSide == Side.Left)
             {
                 transform.rotation = Quaternion.Euler(0, 0, -25);
-                transform.localPosition = new Vector3(initLocalPos.x + 0.8f, transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(initLocalPos.x + 1.5f, transform.localPosition.y, transform.localPosition.z);
+                currentVaultName = vault03.name;
             }
             else
             {
                 transform.rotation = Quaternion.Euler(0, 0, 25);
-                transform.localPosition = new Vector3(initLocalPos.x - 0.6f, transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(initLocalPos.x - 1.5f, transform.localPosition.y, transform.localPosition.z);
+                currentVaultName = vault01.name;
             }
         }
         else
         {
             transform.rotation = Quaternion.identity;
             transform.localPosition = new Vector3(initLocalPos.x, transform.localPosition.y, transform.localPosition.z);
+            currentVaultName = vault02.name;
         }
+    }
+
+    public void ResetHealth()
+    {
+        health = maxHealth;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Collectable"))
+        if (other.CompareTag(TAG.OBJBAD))
         {
             if (health > 0) health -= 1;
             StartCoroutine(ColorSwitch(Color.white, hitColor));
+            Destroy(other.gameObject);
+            CollectiblePooling();
         }
 
-        if (other.CompareTag("GoodCollectable"))
+        else if (other.CompareTag(TAG.OBJGOOD))
         {
-            //if (health < maxHealth) health += 1;
+            if (health < maxHealth) health += 1;
             StartCoroutine(ColorSwitch(Color.white, collectColor));
+            Destroy(other.gameObject);
+            CollectiblePooling();
+        }
+
+        else if (other.CompareTag(TAG.COIN))
+        {
+            Destroy(other.gameObject);
+            CollectiblePooling();
+        }
+    }
+
+    private void CollectiblePooling()
+    {
+        // Coin pooling on player side
+        switch (currentVaultName)
+        {
+            case PrimeObj.VAULT01:
+                for (int i = 0; i < vault01.capacity; i++)
+                {
+                    if (!vault01.isInVault[i])
+                    {
+                        vault01.isInVault[i] = true;
+                        break;
+                    }
+                }
+                break;
+            case PrimeObj.VAULT02:
+                for (int i = 0; i < vault02.capacity; i++)
+                {
+                    if (!vault02.isInVault[i])
+                    {
+                        vault02.isInVault[i] = true;
+                        break;
+                    }
+                }
+                break;
+            case PrimeObj.VAULT03:
+                for (int i = 0; i < vault03.capacity; i++)
+                {
+                    if (!vault03.isInVault[i])
+                    {
+                        vault03.isInVault[i] = true;
+                        break;
+                    }
+                }
+                break;
         }
     }
 

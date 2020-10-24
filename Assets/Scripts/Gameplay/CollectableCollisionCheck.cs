@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class CollectableCollisionCheck : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class CollectableCollisionCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Collectable") || other.CompareTag("GoodCollectable"))
+        if (other.CompareTag(TAG.COIN) || other.CompareTag(TAG.OBJGOOD))
         {
             sc = other.transform.GetComponent<SphereCollider>();
             origincalTag = other.tag;
@@ -24,7 +25,7 @@ public class CollectableCollisionCheck : MonoBehaviour
             _switch = true;
             _target = other;
         }
-        else if (other.CompareTag("UnCollectable"))
+        else if (other.CompareTag(TAG.OBJBAD))
         {
             other.tag = origincalTag;
             sc.isTrigger = false;
@@ -36,7 +37,7 @@ public class CollectableCollisionCheck : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Collectable") || other.CompareTag("GoodCollectable"))
+        if (other.CompareTag(TAG.COIN) || other.CompareTag(TAG.OBJGOOD))
         {
             _switch = false;
             _target = other;
@@ -46,7 +47,7 @@ public class CollectableCollisionCheck : MonoBehaviour
             if (chance >= 6)
             {
                 other.transform.GetComponentInChildren<SpriteRenderer>().sprite = null;
-                other.tag = "UnCollectable";
+                other.tag = TAG.OBJBAD;
                 sc.isTrigger = true;
                 chance = 0;
             }

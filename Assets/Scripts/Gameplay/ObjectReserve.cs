@@ -17,7 +17,7 @@ public class ObjectReserve : MonoBehaviour
 
 
     private MutationPool mutationPool;
-    private GameObject obj_Mutated, obj_coin;
+    private GameObject obj_Mutated, obj_coin, obj_Extreme;
 
     [SerializeField]
     private Vault vault01, vault02, vault03;
@@ -32,6 +32,7 @@ public class ObjectReserve : MonoBehaviour
     {
         obj_coin = Resources.Load<GameObject>(Prefab.COIN);
         obj_Mutated = Resources.Load<GameObject>(Prefab.MUTATED);
+        obj_Extreme = Resources.Load<GameObject>(Prefab.EXTREME);
         mutationPool = GameObject.Find(PrimeObj.MUTATIONPOOL).GetComponent<MutationPool>();
 
         VaultSetup(PrimeObj.VAULT01, CONST.VAULT_01_CAPACITY, out vault01);
@@ -75,14 +76,14 @@ public class ObjectReserve : MonoBehaviour
                 var mutationChance = UnityEngine.Random.Range(0, 1001);
 
                 // Each mutation has % of occurence
-                if (mutationChance >= 950)
+                if (mutationChance >= 950 && mutationChance <= 990)
                 {
                     theVault.objPool[i] = obj_Mutated;
                     theVault.objPool[i].TryGetComponent<MutationAppearance>(out var skin);
                     if (skin != null)
                     {
-                        var mutationType = UnityEngine.Random.Range(0, 3);
-                        if (mutationType < 2)
+                        var mutationType = UnityEngine.Random.Range(0, 6);
+                        if (mutationType < 1)
                         {
                             skin.Skin = randomize.RandomizeMe(mutationPool.Beneficials);
                             theVault.objPool[i].tag = TAG.OBJGOOD;
@@ -92,6 +93,17 @@ public class ObjectReserve : MonoBehaviour
                             skin.Skin = randomize.RandomizeMe(mutationPool.Harmfuls);
                             theVault.objPool[i].tag = TAG.OBJBAD;
                         }
+                    }
+                }
+                // Extreme mutation chance
+                else if (mutationChance >= 991)
+                {
+                    theVault.objPool[i] = obj_Extreme;
+                    theVault.objPool[i].TryGetComponent<MutationAppearance>(out var skin);
+                    if (skin != null)
+                    {
+                        skin.Skin = randomize.RandomizeMe(mutationPool.Extremes);
+                        theVault.objPool[i].tag = TAG.OBJBAD;
                     }
                 }
             }

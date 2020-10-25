@@ -7,16 +7,11 @@ using Constants;
 public class Player : MonoBehaviour
 {
     // Gameplay Variables
-    [SerializeField]
     private int health;
     public int Health { get { return health; } }
-    [SerializeField]
     private int maxHealth;
     public int MaxHealth { get { return maxHealth; } }
-    // [SerializeField]
-    // private float speed;
-    // public float Speed { get { return speed; } }
-    
+
     // Input Configurations
     [SerializeField, Header("Input Configurations")]
     private KeyCode jump;
@@ -58,7 +53,7 @@ public class Player : MonoBehaviour
 
     public bool RequestCoffee { get { return AskForCoffee(); } }
 
-    private float caffeineMaxLevel, caffeineMinLevel, coffeePerServing;
+    private float caffeineMaxLevel, coffeePerServing;
 
     [SerializeField, Header("How fast could I digest all this?")]
     private float consumingSpeed;
@@ -67,23 +62,27 @@ public class Player : MonoBehaviour
     private ObjectReserve.Vault vault01, vault02, vault03;
     private string currentVaultName;
 
+    // Player event
+    public event EventHandler OnCollectCoin;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
 
+    public float rb_speed;
+
     private void Start()
     {
-        // health info
+        // Health info
         maxHealth = 2;
         health = maxHealth;
-        
-        // Initialize jump mechanic parameters
-        fallMultiplier = 2.5f;
-        lowJumpMultiplier = 2f;
 
-        // Initialize dodge mechanic parameters
-        //dodgeSide = Side.none;
+        // Initialize jump mechanic parameters
+        //fallMultiplier = 2.5f;
+        //lowJumpMultiplier = 2f;
+        fallMultiplier = 7f;
+        lowJumpMultiplier = 4f;
 
         // Initialize color effects
         playerSprite = GetComponentInChildren<SpriteRenderer>();
@@ -93,14 +92,17 @@ public class Player : MonoBehaviour
         initLocalPos = transform.localPosition;
 
         caffeineMaxLevel = 100;
-        caffeineMinLevel = 0;
         coffeePerServing = 20;
 
         // Player start with some caffeine in its blood
-        caffeineLevel = 50;
+        caffeineLevel = caffeineMaxLevel;
 
-        consumingSpeed = 1;
+        consumingSpeed = 5;
 
+    }
+
+    public void AssignVault()
+    {
         vault01 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault01;
         vault02 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault02;
         vault03 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault03;
@@ -116,14 +118,7 @@ public class Player : MonoBehaviour
         else if (AskForCoffee()) DrinkCoffee(coffeePerServing);
 
         // Prevent cafein level going outside permited range
-        if (caffeineLevel > 100)
-        {
-            caffeineLevel = 100;
-        }
-        else if  (caffeineLevel < 0)
-        {
-            caffeineLevel = 0;
-        }
+        CaffeineLevelLimiter();
     }
 
     private void FixedUpdate()
@@ -133,6 +128,8 @@ public class Player : MonoBehaviour
 
         // Dodge!
         Dodge();
+
+        rb_speed = rb.velocity.magnitude;
     }
 
     private void DrinkCoffee(float amount)
@@ -150,11 +147,30 @@ public class Player : MonoBehaviour
         return Input.GetKeyDown(vomitCoffee);
     }
 
+    private void CaffeineLevelLimiter()
+    {
+        if (caffeineLevel > 100)
+        {
+            caffeineLevel = 100;
+        }
+        else if (caffeineLevel < 0)
+        {
+            caffeineLevel = 0;
+        }
+    }
+
+    public void ResetCaffeineLevel()
+    {
+        caffeineLevel = caffeineMaxLevel;
+    }
+
     private bool RequestJump()
     {
         // Only allow jumping when player is grounded
         // This could cause double jump
-        if (rb.velocity.magnitude <= 0.2f) return Input.GetKeyDown(jump);
+        //if (rb.velocity.magnitude >= 1f && rb.velocity.magnitude <= 1.2f)
+        if (transform.position.y >= 1.5f && transform.position.y <= 1.7f)
+            return Input.GetKeyDown(jump);
         // Otherwise the key pressed has no effect
         else return false;
         //else return Input.GetKeyDown(KeyCode.None);
@@ -205,13 +221,13 @@ public class Player : MonoBehaviour
             if (dodgeSide == Side.Left)
             {
                 transform.rotation = Quaternion.Euler(0, 0, -25);
-                transform.localPosition = new Vector3(initLocalPos.x + 1.5f, transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(initLocalPos.x + 3f, transform.localPosition.y, transform.localPosition.z);
                 currentVaultName = vault03.name;
             }
             else
             {
                 transform.rotation = Quaternion.Euler(0, 0, 25);
-                transform.localPosition = new Vector3(initLocalPos.x - 1.5f, transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(initLocalPos.x - 3f, transform.localPosition.y, transform.localPosition.z);
                 currentVaultName = vault01.name;
             }
         }
@@ -250,6 +266,9 @@ public class Player : MonoBehaviour
         {
             Destroy(other.gameObject);
             CollectiblePooling();
+
+            // Send event notification that player has collected a coin
+            OnCollectCoin?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -302,5 +321,15 @@ public class Player : MonoBehaviour
         }
 
         playerSprite.color = color1;
+    }
+
+    public void UpgradeConsumingSpeed()
+    {
+        consumingSpeed -= 0.75f;
+    }
+
+    public void UpgradeMaxHealth()
+    {
+        maxHealth += 1;
     }
 }

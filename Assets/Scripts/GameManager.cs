@@ -11,20 +11,16 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameState gameState;
-    [SerializeField]
-    private bool stateWorkingContinously;
+    private bool gameStateUpdate;
 
     private string currentScene;
 
     private Canvas mainMenu, upgradeMenu, gameOverMenu;
 
-    [SerializeField]
     private Player player;
+    private GameObject playerOBJ;
 
-    [SerializeField]
-    private int playerHealth;
-
-    [SerializeField, Header("Money on game start")]
+    [SerializeField, Header("Current amount of money")]
     private int money;
     public int CheckWallet { get { return money; } }
 
@@ -41,13 +37,13 @@ public class GameManager : MonoBehaviour
         PreloadSetup();
 
         // No state switching occurence
-        stateWorkingContinously = false;
+        gameStateUpdate = false;
     }
 
     void Start()
     {
         // Initialize money at game start
-        money = 30000;
+        money = 100;
 
         // Start game
         GameStart();
@@ -84,6 +80,13 @@ public class GameManager : MonoBehaviour
         // Get Lose canvas
         gameOverMenu = GameObject.Find("Game Over Menu").GetComponent<Canvas>();
         gameOverMenu.enabled = false;
+
+        // Find Player
+        playerOBJ = GameObject.Find(PrimeObj.PLAYER);
+        player = playerOBJ.GetComponent<Player>();
+
+        // Listen to events
+        player.OnCollectCoin += PlayerCollectedACoin;
     }
 
     private void OnLevelWasLoaded()
@@ -105,14 +108,18 @@ public class GameManager : MonoBehaviour
 
             case SceneName.GAME:
                 Debug.Log("Gameplay loaded");
+                //gameOverMenu.renderMode = RenderMode.ScreenSpaceCamera;
+                //gameOverMenu.worldCamera = Camera.main;
+                //gameOverMenu.planeDistance = 1;
+
+                playerOBJ.SetActive(true);
+                playerOBJ.GetComponent<Rigidbody>().isKinematic = false;
+                player.AssignVault();
 
                 // Switch state to playing
                 gameState = GameState.Playing;
 
-                stateWorkingContinously = true;
-
-                // Find Player
-                player = GameObject.Find(PrimeObj.PLAYER).GetComponent<Player>();
+                gameStateUpdate = true;
 
                 // Deactivate Main Menu
                 mainMenu.enabled = false;
@@ -128,7 +135,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (stateWorkingContinously)
+        if (gameStateUpdate)
         {
             GameStateMonitoring();
         }
@@ -140,7 +147,7 @@ public class GameManager : MonoBehaviour
         {
             case GameState.Start:
                 SceneManager.LoadScene(SceneName.MAINMENU);
-                stateWorkingContinously = false;
+                gameStateUpdate = false;
                 break;
 
             case GameState.New:
@@ -154,22 +161,22 @@ public class GameManager : MonoBehaviour
 
                 CheckUpgradeAvailability();
                 CheckPlayerHealth();
+                CheckPlayerCaffeineLevel();
 
-                playerHealth = player.Health;
                 break;
 
             case GameState.Pausing:
                 //upgradeMenu.GetComponent<UI_Panel_Slider>().ScrollIn();
                 upgradeMenu.enabled = true;
-                stateWorkingContinously = false;
+                gameStateUpdate = false;
 
                 break;
 
             case GameState.Lose:
                 // Show lose game screen
                 gameOverMenu.enabled = true;
+                gameStateUpdate = false;
 
-                stateWorkingContinously = false;
                 break;
         }
     }
@@ -194,36 +201,53 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void CheckPlayerCaffeineLevel()
+    {
+        if (player.CaffeineLevel <= 0)
+        {
+            gameState = GameState.Lose;
+        }
+    }
+
     // PUBLIC METHODS
     public void GameStart()
     {
-        stateWorkingContinously = true;
+        gameStateUpdate = true;
         gameState = GameState.Start;
+        playerOBJ.GetComponent<Rigidbody>().isKinematic = true;
+        playerOBJ.SetActive(false);
     }
 
     public void NewGame()
     {
-        stateWorkingContinously = true;
+        gameStateUpdate = true;
         gameState = GameState.New;
     }
 
     public void PauseGame()
     {
-        stateWorkingContinously = true;
+        gameStateUpdate = true;
         gameState = GameState.Pausing;
     }
 
     public void UnPauseGame()
     {
-        stateWorkingContinously = true;
+        gameStateUpdate = true;
         gameState = GameState.New;
         player.ResetHealth();
+        player.ResetCaffeineLevel();
     }
 
     public void LoseGame()
     {
-        stateWorkingContinously = true;
+        gameStateUpdate = true;
         gameState = GameState.Lose;
+    }
+
+    private void PlayerCollectedACoin(object sender, EventArgs e)
+    {
+        // A coin equals a unit of money
+        AddMoney(1);
     }
 
     public void AddMoney(int amount)
@@ -233,13 +257,32 @@ public class GameManager : MonoBehaviour
 
     public void PurchaseUpgrade(int statID)
     {
-        if (upgradeData.Stats[statID].level <= upgradeData.Stats[statID].maxLevel)
+        // Request upgrade
+        if (upgradeData.CheckUpgradeAvailability(statID) && money >= upgradeData.Stats[statID].cost)
         {
-            upgradeData.Stats[statID].level++;
+            // Purchase & deduct money
+            AddMoney(-upgradeData.PurchaseUpgrade(statID));
 
-            AddMoney(-upgradeData.Stats[statID].cost);
+            // Update upgrade stat
+            upgradeData.UpdateStat(statID);
 
-            upgradeData.Stats[statID].cost += upgradeData.Stats[statID].nextCosst;
+            // Update gameplay stat
+            UpgadeGameplayStats(statID);
+        }
+    }
+
+    private void UpgadeGameplayStats(int statID)
+    {
+        switch (statID)
+        {
+            case 0:
+                player.UpgradeConsumingSpeed();
+                break;
+            case 1:
+                player.UpgradeMaxHealth();
+                break;
+            default:
+                break;
         }
     }
 }

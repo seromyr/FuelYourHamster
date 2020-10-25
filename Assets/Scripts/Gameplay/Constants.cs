@@ -43,7 +43,7 @@ namespace Constants
         public int cost;
 
         // The cost increase after each purchase
-        public int nextCosst;
+        public int nextCost;
 
         // The maximum number of upgrade that this stat has
         public int maxLevel;
@@ -79,6 +79,7 @@ namespace Constants
     {
         public const string COIN = "Coin";
         public const string MUTATED = "MutatedObject";
+        public const string EXTREME = "ExtremeObject";
     }
     public static class StatID
     {

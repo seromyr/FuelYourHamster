@@ -4,9 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Collectable
-  - UnCollectable
-  - GoodCollectable
+  - SpawnCollider
+  - Coin
+  - GoodCollectible
+  - BadCollectible
   layers:
   - Default
   - TransparentFX

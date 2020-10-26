@@ -13,9 +13,9 @@ public class UI_Upgrade : MonoBehaviour
     {
         gameManager = GameObject.Find(PrimeObj.GAMEMANAGER).GetComponent<GameManager>();
         button = GetComponent<Button>();
-        button.onClick.AddListener(ShowUpgade);
+        button.onClick.AddListener(ShowUpgrade);
     }
-    public void ShowUpgade()
+    public void ShowUpgrade()
     {
         gameManager.PauseGame();
     }

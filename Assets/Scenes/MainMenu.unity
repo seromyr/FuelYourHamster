@@ -851,7 +851,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.022e-42, y: 0.000021371568, z: 1.02e-42, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 2.5e-44}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -3240,7 +3240,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 2.3509887e-38, z: 2.7107536e-20, w: 7.737127e+25}
+  m_BoundingSphereOverride: {x: 4.5905e-41, y: 3.1771298e-16, z: 4.5905e-41, w: -3.060227e+11}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -3449,7 +3449,7 @@ SpriteRenderer:
   m_Size: {x: 10.24, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1224826464
@@ -3818,8 +3818,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3d6f09631a93b4599140621bc315cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distanceModifier: 0
-  frequency: 0
+  direction: 1
+  distanceModifier: 1
+  frequency: 1
+  offset: 0
 --- !u!1 &1503376563
 GameObject:
   m_ObjectHideFlags: 0

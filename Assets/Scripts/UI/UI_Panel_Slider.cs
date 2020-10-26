@@ -6,7 +6,7 @@ public class UI_Panel_Slider : MonoBehaviour
 {
     private Vector3 defaultOffset;
 
-    private RectTransform rectTransform;
+    private RectTransform panelRectTransform;
 
     private Vector3 inPosition, outPosition;
 
@@ -17,17 +17,18 @@ public class UI_Panel_Slider : MonoBehaviour
 
     void Awake()
     {
-        rectTransform = transform.GetComponent<RectTransform>();
-        defaultOffset.y = rectTransform.position.magnitude;
+        panelRectTransform = transform.Find("Panel").GetComponent<RectTransform>();
     }
 
     private void Start()
     {
-        inPosition = rectTransform.position;
-        outPosition = inPosition + defaultOffset;
+        inPosition = Vector3.zero;
+        outPosition = new Vector3(0, GetComponent<RectTransform>().position.y * 2, 0);
+
+        speed = 10;
 
         // Initialize default position
-        rectTransform.position = outPosition;
+        panelRectTransform.localPosition = outPosition;
 
         called = false;
     }
@@ -36,11 +37,11 @@ public class UI_Panel_Slider : MonoBehaviour
     {
         if (called)
         {
-            rectTransform.position = Vector3.MoveTowards(rectTransform.position, inPosition, Time.deltaTime * speed);
+            panelRectTransform.localPosition = Vector3.Lerp(panelRectTransform.localPosition, inPosition, Time.deltaTime * speed);
         }
         else
         {
-            rectTransform.position = Vector3.MoveTowards(rectTransform.position, outPosition, Time.deltaTime * speed);
+            panelRectTransform.localPosition = Vector3.Lerp(panelRectTransform.localPosition, outPosition, Time.deltaTime * speed);
         }
     }
 

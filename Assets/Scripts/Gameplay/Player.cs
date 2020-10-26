@@ -1,28 +1,24 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using Constants;
 
 public class Player : MonoBehaviour
 {
     // Gameplay Variables
-    [SerializeField]
     private int health;
     public int Health { get { return health; } }
-    [SerializeField]
     private int maxHealth;
     public int MaxHealth { get { return maxHealth; } }
-    // [SerializeField]
-    // private float speed;
-    // public float Speed { get { return speed; } }
-    
+
     // Input Configurations
     [SerializeField, Header("Input Configurations")]
     private KeyCode jump;
     [SerializeField]
-    private KeyCode dodge;
+    private KeyCode dodgeLeft;
+    [SerializeField]
+    private KeyCode dodgeRight;
     [SerializeField]
     private KeyCode serveCoffee;
     [SerializeField]
@@ -57,28 +53,36 @@ public class Player : MonoBehaviour
 
     public bool RequestCoffee { get { return AskForCoffee(); } }
 
-    private float caffeineMaxLevel, caffeineMinLevel, coffeePerServing;
+    private float caffeineMaxLevel, coffeePerServing;
 
     [SerializeField, Header("How fast could I digest all this?")]
     private float consumingSpeed;
+
+    // Player get access to vault
+    private ObjectReserve.Vault vault01, vault02, vault03;
+    private string currentVaultName;
+
+    // Player event
+    public event EventHandler OnCollectCoin;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
 
+    public float rb_speed;
+
     private void Start()
     {
-        // health info
+        // Health info
         maxHealth = 2;
         health = maxHealth;
-        
-        // Initialize jump mechanic parameters
-        fallMultiplier = 2.5f;
-        lowJumpMultiplier = 2f;
 
-        // Initialize dodge mechanic parameters
-        //dodgeSide = Side.none;
+        // Initialize jump mechanic parameters
+        //fallMultiplier = 2.5f;
+        //lowJumpMultiplier = 2f;
+        fallMultiplier = 7f;
+        lowJumpMultiplier = 4f;
 
         // Initialize color effects
         playerSprite = GetComponentInChildren<SpriteRenderer>();
@@ -88,11 +92,20 @@ public class Player : MonoBehaviour
         initLocalPos = transform.localPosition;
 
         caffeineMaxLevel = 100;
-        caffeineMinLevel = 0;
         coffeePerServing = 20;
 
-        // Player start with little caffeine in its blood
-        caffeineLevel = caffeineMinLevel + 30;
+        // Player start with some caffeine in its blood
+        caffeineLevel = caffeineMaxLevel;
+
+        consumingSpeed = 5;
+
+    }
+
+    public void AssignVault()
+    {
+        vault01 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault01;
+        vault02 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault02;
+        vault03 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault03;
     }
 
     private void Update()
@@ -105,20 +118,18 @@ public class Player : MonoBehaviour
         else if (AskForCoffee()) DrinkCoffee(coffeePerServing);
 
         // Prevent cafein level going outside permited range
-        if (caffeineLevel > 100)
-        {
-            caffeineLevel = 100;
-        }
-        else if  (caffeineLevel < 0)
-        {
-            caffeineLevel = 0;
-        }
+        CaffeineLevelLimiter();
+    }
 
+    private void FixedUpdate()
+    {
         // Jump!
         Jump();
 
         // Dodge!
         Dodge();
+
+        rb_speed = rb.velocity.magnitude;
     }
 
     private void DrinkCoffee(float amount)
@@ -136,11 +147,30 @@ public class Player : MonoBehaviour
         return Input.GetKeyDown(vomitCoffee);
     }
 
+    private void CaffeineLevelLimiter()
+    {
+        if (caffeineLevel > 100)
+        {
+            caffeineLevel = 100;
+        }
+        else if (caffeineLevel < 0)
+        {
+            caffeineLevel = 0;
+        }
+    }
+
+    public void ResetCaffeineLevel()
+    {
+        caffeineLevel = caffeineMaxLevel;
+    }
+
     private bool RequestJump()
     {
         // Only allow jumping when player is grounded
         // This could cause double jump
-        if (rb.velocity.magnitude <= 0.2f) return Input.GetKeyDown(jump);
+        //if (rb.velocity.magnitude >= 1f && rb.velocity.magnitude <= 1.2f)
+        if (transform.position.y >= 1.5f && transform.position.y <= 1.7f)
+            return Input.GetKeyDown(jump);
         // Otherwise the key pressed has no effect
         else return false;
         //else return Input.GetKeyDown(KeyCode.None);
@@ -168,14 +198,15 @@ public class Player : MonoBehaviour
 
     private bool RequestDodge()
     {
-        if (Input.GetKey(dodge))
+        if (Input.GetKey(dodgeLeft))
         {
-            return Input.GetKey(dodge);
+            dodgeSide = Side.Left;
+            return Input.GetKey(dodgeLeft);
         }
-        else if (Input.GetKeyUp(dodge))
+        else if (Input.GetKey(dodgeRight))
         {
-            dodgeSide = (Side)UnityEngine.Random.Range(1, 3);
-            return false;
+            dodgeSide = Side.Right;
+            return Input.GetKey(dodgeRight);
         }
         else
         {
@@ -187,36 +218,95 @@ public class Player : MonoBehaviour
     {
         if (RequestDodge())
         {
-            if (dodgeSide == Side.left)
+            if (dodgeSide == Side.Left)
             {
                 transform.rotation = Quaternion.Euler(0, 0, -25);
-                transform.localPosition = new Vector3(initLocalPos.x + 0.8f, transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(initLocalPos.x + 3f, transform.localPosition.y, transform.localPosition.z);
+                currentVaultName = vault03.name;
             }
             else
             {
                 transform.rotation = Quaternion.Euler(0, 0, 25);
-                transform.localPosition = new Vector3(initLocalPos.x - 0.6f, transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(initLocalPos.x - 3f, transform.localPosition.y, transform.localPosition.z);
+                currentVaultName = vault01.name;
             }
         }
         else
         {
             transform.rotation = Quaternion.identity;
             transform.localPosition = new Vector3(initLocalPos.x, transform.localPosition.y, transform.localPosition.z);
+            currentVaultName = vault02.name;
         }
+    }
+
+    public void ResetHealth()
+    {
+        health = maxHealth;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Collectable"))
+        if (other.CompareTag(TAG.OBJBAD))
         {
             if (health > 0) health -= 1;
             StartCoroutine(ColorSwitch(Color.white, hitColor));
+            Destroy(other.gameObject);
+            CollectiblePooling();
         }
 
-        if (other.CompareTag("GoodCollectable"))
+        else if (other.CompareTag(TAG.OBJGOOD))
         {
-            //if (health < maxHealth) health += 1;
+            if (health < maxHealth) health += 1;
             StartCoroutine(ColorSwitch(Color.white, collectColor));
+            Destroy(other.gameObject);
+            CollectiblePooling();
+        }
+
+        else if (other.CompareTag(TAG.COIN))
+        {
+            Destroy(other.gameObject);
+            CollectiblePooling();
+
+            // Send event notification that player has collected a coin
+            OnCollectCoin?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void CollectiblePooling()
+    {
+        // Coin pooling on player side
+        switch (currentVaultName)
+        {
+            case PrimeObj.VAULT01:
+                for (int i = 0; i < vault01.capacity; i++)
+                {
+                    if (!vault01.isInVault[i])
+                    {
+                        vault01.isInVault[i] = true;
+                        break;
+                    }
+                }
+                break;
+            case PrimeObj.VAULT02:
+                for (int i = 0; i < vault02.capacity; i++)
+                {
+                    if (!vault02.isInVault[i])
+                    {
+                        vault02.isInVault[i] = true;
+                        break;
+                    }
+                }
+                break;
+            case PrimeObj.VAULT03:
+                for (int i = 0; i < vault03.capacity; i++)
+                {
+                    if (!vault03.isInVault[i])
+                    {
+                        vault03.isInVault[i] = true;
+                        break;
+                    }
+                }
+                break;
         }
     }
 
@@ -231,5 +321,15 @@ public class Player : MonoBehaviour
         }
 
         playerSprite.color = color1;
+    }
+
+    public void UpgradeConsumingSpeed()
+    {
+        consumingSpeed -= 0.75f;
+    }
+
+    public void UpgradeMaxHealth()
+    {
+        maxHealth += 1;
     }
 }

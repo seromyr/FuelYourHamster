@@ -19,7 +19,7 @@ public class UpgradeData : MonoBehaviour
         // There are 5 upgrade stats in the game
         stats = new UpgradeStat[5];
 
-        for (int i = 2; i < stats.Length; i++)
+        for (int i = 3; i < stats.Length; i++)
         {
             stats[i] = new UpgradeStat()
             {
@@ -51,8 +51,17 @@ public class UpgradeData : MonoBehaviour
             level = 1,
             available = false,
         };
-    }
 
+        stats[2] = new UpgradeStat()
+        {
+            name = "Max Fuel",
+            cost = 15,
+            nextCost = 0,
+            maxLevel = 10,
+            level = 1,
+            available = false,
+        };
+    }
 
     public bool CheckUpgradeAvailability(int statID)
     {

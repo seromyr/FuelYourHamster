@@ -91,13 +91,14 @@ public class Player : MonoBehaviour
         dodgeSide = (Side)UnityEngine.Random.Range(1, 3);
         initLocalPos = transform.localPosition;
 
-        caffeineMaxLevel = 20;
+        caffeineMaxLevel = 100;
         coffeePerServing = 20;
 
         // Player start with some caffeine in its blood
         caffeineLevel = caffeineMaxLevel;
 
         consumingSpeed = 5;
+
     }
 
     public void AssignVault()
@@ -168,8 +169,8 @@ public class Player : MonoBehaviour
         // Only allow jumping when player is grounded
         // This could cause double jump
         //if (rb.velocity.magnitude >= 1f && rb.velocity.magnitude <= 1.2f)
-        if (transform.position.y >= 1.4f && transform.position.y <= 1.7f)
-            return Input.GetKey(jump);
+        if (transform.position.y >= 1.5f && transform.position.y <= 1.7f)
+            return Input.GetKeyDown(jump);
         // Otherwise the key pressed has no effect
         else return false;
         //else return Input.GetKeyDown(KeyCode.None);
@@ -322,7 +323,7 @@ public class Player : MonoBehaviour
         playerSprite.color = color1;
     }
 
-    public void UpgradeFuelEfficiency()
+    public void UpgradeConsumingSpeed()
     {
         consumingSpeed -= 0.75f;
     }
@@ -330,10 +331,5 @@ public class Player : MonoBehaviour
     public void UpgradeMaxHealth()
     {
         maxHealth += 1;
-    }
-
-    public void UpgradeMaxFuel()
-    {
-        caffeineMaxLevel += 20;
     }
 }

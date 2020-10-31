@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Initialize money at game start
-        money = 10000;
+        money = 100;
 
         // Start game
         GameStart();
@@ -276,13 +276,10 @@ public class GameManager : MonoBehaviour
         switch (statID)
         {
             case 0:
-                player.UpgradeFuelEfficiency();
+                player.UpgradeConsumingSpeed();
                 break;
             case 1:
                 player.UpgradeMaxHealth();
-                break;
-            case 2:
-                player.UpgradeMaxFuel();
                 break;
             default:
                 break;

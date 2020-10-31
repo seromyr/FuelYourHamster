@@ -32,13 +32,6 @@ namespace Constants
         Gamma
     }
 
-    // Sound states
-    public enum AudioState
-    {
-        On,
-        Off,
-    }
-
     // Upgrade statistics
     [Serializable]
     public struct UpgradeStat
@@ -111,12 +104,6 @@ namespace Constants
         public const string COIN = "Coin";
         public const string OBJGOOD = "GoodCollectible";
         public const string OBJBAD = "BadCollectible";
-    }
-
-    public static class AudioComponent
-    {
-        public const string SOUND = "Sound";
-        public const string MUSIC = "Music";
     }
 }
 

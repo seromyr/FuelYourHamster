@@ -5,23 +5,13 @@ using UnityEngine.UI;
 
 public class CoffeeMeterMechanic : MonoBehaviour
 {
-    // Player reference
-    private Player player;
-
     // For debugging
     [SerializeField]
     private float currentCaffeineLevel;
 
-    // For adjusting color based on current caffeine level
-    [SerializeField]
-    private Gradient gradient;
-
     // Fill image
     [SerializeField]
-    private Image fill;
-
-    // Fill amount slider
-    private Slider slider;
+    private Image barFill, barBkg, barOutline;
 
     // Coffee pouring animation
     private Image kettle, pouringCoffee;
@@ -29,28 +19,39 @@ public class CoffeeMeterMechanic : MonoBehaviour
     // Coffee serving check
     private bool isPouringCoffee;
 
+    [SerializeField]
+    private List<Sprite> barBkgs, barOutlines;
+
+    private void Awake()
+    {
+        barBkgs.AddRange(Resources.LoadAll<Sprite>("UIComponents/Coffee-O-Meter/Backgrounds"));
+        barOutlines.AddRange(Resources.LoadAll<Sprite>("UIComponents/Coffee-O-Meter/Outlines"));
+
+        transform.Find("BarFill").TryGetComponent(out barFill);
+        transform.Find("BarBackground").TryGetComponent(out barBkg);
+        transform.Find("BarOutline").TryGetComponent(out barOutline);
+
+        transform.Find("Coffee").transform.Find("Kettle").TryGetComponent(out kettle);
+        pouringCoffee = kettle.transform.GetComponentInChildren<Image>();
+    }
+
     private void Start()
     {
-        // Setups
-        slider = GetComponent<Slider>();
-        fill = GameObject.Find("Fill").GetComponent<Image>();
-        kettle = GameObject.Find("Kettle").GetComponent<Image>();
-        pouringCoffee = kettle.gameObject.transform.GetChild(0).GetComponent<Image>();
         HideKettle();
         isPouringCoffee = false;
 
-        player = GameObject.Find("Player").GetComponent<Player>();
-        currentCaffeineLevel = player.CaffeineLevel;
+        currentCaffeineLevel = Player.main.CaffeineCurrentLevel;
         SetCaffeineLevel(currentCaffeineLevel);
+        SetBarLevel(0);
     }
 
     private void Update()
     {
         // Monitor and display player's current amount of caffeine in the blood stream
-        currentCaffeineLevel = player.CaffeineLevel;
+        currentCaffeineLevel = Player.main.CaffeineCurrentLevel;
         SetCaffeineLevel(currentCaffeineLevel);
 
-        if (player.RequestCoffee) PourCoffee();
+        if (Player.main.RequestCoffee) PourCoffee();
 
         if (isPouringCoffee) CoffeeFlow(200);
 
@@ -67,10 +68,9 @@ public class CoffeeMeterMechanic : MonoBehaviour
         }
     }
 
-    public void SetCaffeineLevel(float _health)
+    public void SetCaffeineLevel(float value)
     {
-        slider.value = _health;
-        fill.color = gradient.Evaluate(_health / 100);
+        barFill.fillAmount = value / Player.main.CaffeineMaxLevel;
     }
 
     private void HideKettle()
@@ -103,5 +103,11 @@ public class CoffeeMeterMechanic : MonoBehaviour
     {
         pouringCoffee.fillOrigin = 1;
         pouringCoffee.fillAmount = 0;
+    }
+
+    public void SetBarLevel(int value)
+    {
+        barFill.sprite = barBkg.sprite = barBkgs[value];
+        barOutline.sprite = barOutlines[value];
     }
 }

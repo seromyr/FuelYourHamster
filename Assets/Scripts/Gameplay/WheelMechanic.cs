@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class WheelMechanic : MonoBehaviour
 {
-    [SerializeField, Header("Player Reference")]
-    private Player player;
-
     [SerializeField, Header("Rotation Maximum Speed")]
     private float maxSpeed;
 
@@ -24,12 +21,6 @@ public class WheelMechanic : MonoBehaviour
 
     void Start()
     {
-        // Get player reference
-        if (player == null)
-        {
-            player = GameObject.Find("Player").GetComponent<Player>();
-        }
-
         //maxSpeed = 100;
         speed = 0;
     }
@@ -37,7 +28,7 @@ public class WheelMechanic : MonoBehaviour
     void Update()
     {
         // Wheel only runs if player is running
-        RotateWheel(player.IsRunning);
+        RotateWheel(Player.main.IsRunning);
     }
 
     private void RotateWheel(bool playerIsRunning)

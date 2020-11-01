@@ -6,12 +6,8 @@ using UnityEngine.UI;
 
 public class HealthMechanic : MonoBehaviour
 {
-    private Player player;
-    private GameManager gameManager;
-
     [SerializeField]
     private List<Image> healthGraphics;
-
     
     // health UI
     private Sprite heart_OK, heart_notOK;
@@ -20,10 +16,7 @@ public class HealthMechanic : MonoBehaviour
     {
         healthGraphics.AddRange( GetComponentsInChildren<Image>());
 
-        gameManager = GameObject.Find(PrimeObj.GAMEMANAGER).GetComponent<GameManager>();
-        player = GameObject.Find("Player").GetComponent<Player>();
-
-        for (int i = player.MaxHealth; i < healthGraphics.Count; i++)
+        for (int i = Player.main.MaxHealth; i < healthGraphics.Count; i++)
         {
             healthGraphics[i].enabled = false;
         }
@@ -40,18 +33,18 @@ public class HealthMechanic : MonoBehaviour
     private void HealthUpdate()
     {
         // Update max health
-        for (int i = 0; i < player.MaxHealth; i++)
+        for (int i = 0; i < Player.main.MaxHealth; i++)
         {
             healthGraphics[i].enabled = true;
         }
 
         // Update current health
-        for (int i = 0; i < player.Health; i++)
+        for (int i = 0; i < Player.main.CurrentHealth; i++)
         {
             healthGraphics[i].sprite = heart_OK;
         }
 
-        for (int i = player.Health; i < player.MaxHealth; i++)
+        for (int i = Player.main.CurrentHealth; i < Player.main.MaxHealth; i++)
         {
             healthGraphics[i].sprite = heart_notOK;
         }

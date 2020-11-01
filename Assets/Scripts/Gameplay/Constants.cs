@@ -103,6 +103,8 @@ namespace Constants
         public const int VAULT_01_CAPACITY = 5;
         public const int VAULT_02_CAPACITY = 9;
         public const int VAULT_03_CAPACITY = 7;
+        public const int DEFAULT_MAX_CAFFEINE_LEVEL = 20;
+        public const int DEFAULT_CAFFEINE_COSUMING_SPEED = 5;
     }
 
     public static class TAG

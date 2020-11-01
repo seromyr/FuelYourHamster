@@ -4,10 +4,11 @@ using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
 using Constants;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager gameManager;
+    public static GameManager main;
 
     [SerializeField]
     private GameState gameState;
@@ -24,14 +25,16 @@ public class GameManager : MonoBehaviour
     private int money;
     public int CheckWallet { get { return money; } }
 
-    private UpgradeData upgradeData;
-    // Provide access to upgrade data via Game Manager
-    public UpgradeData UpgradeData { get { return upgradeData; } }
+    //private UpgradeData upgradeData;
+    //// Provide access to upgrade data via Game Manager
+    //public UpgradeData UpgradeData { get { return upgradeData; } }
+
+    private CoffeeMeterMechanic coffee_O_Meter;
 
     private void Awake()
     {
-        // Make the Game Manager a Singleton
-        Singleton_dinator();
+        // Make the Game Manager become a Singleton
+        Singletonizer();
 
         // Setup before loading the Main Menu
         PreloadSetup();
@@ -48,14 +51,14 @@ public class GameManager : MonoBehaviour
         // Start game
         GameStart();
     }
-    private void Singleton_dinator()
+    private void Singletonizer()
     {
-        if (gameManager == null)
+        if (main == null)
         {
             DontDestroyOnLoad(gameObject);
-            gameManager = this;
+            main = this;
         }
-        else if (gameManager != this)
+        else if (main != this)
         {
             Destroy(gameObject);
         }
@@ -63,6 +66,10 @@ public class GameManager : MonoBehaviour
 
     private void PreloadSetup()
     {
+        // Add event system for UI
+        gameObject.AddComponent<EventSystem>();
+        gameObject.AddComponent<StandaloneInputModule>();
+
         // Get current scene index to load the next screen which is Main Menu
         currentScene = SceneManager.GetActiveScene().name;
 
@@ -74,8 +81,8 @@ public class GameManager : MonoBehaviour
         upgradeMenu = GameObject.Find("Upgrade Menu").GetComponent<Canvas>();
         upgradeMenu.enabled = false;
 
-        // Get Upgrade data 
-        upgradeData = GetComponent<UpgradeData>();
+        //// Get Upgrade data 
+        //upgradeData = GetComponent<UpgradeData>();
 
         // Get Lose canvas
         gameOverMenu = GameObject.Find("Game Over Menu").GetComponent<Canvas>();
@@ -86,7 +93,7 @@ public class GameManager : MonoBehaviour
         player = playerOBJ.GetComponent<Player>();
 
         // Listen to events
-        player.OnCollectCoin += PlayerCollectedACoin;
+        player.OnCollectToken += PlayerCollectedACoin;
     }
 
     private void OnLevelWasLoaded()
@@ -111,6 +118,8 @@ public class GameManager : MonoBehaviour
                 //gameOverMenu.renderMode = RenderMode.ScreenSpaceCamera;
                 //gameOverMenu.worldCamera = Camera.main;
                 //gameOverMenu.planeDistance = 1;
+                UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
+                UI_Gameplay_Mechanic.main.SetCanvasActive(true);
 
                 playerOBJ.SetActive(true);
                 playerOBJ.GetComponent<Rigidbody>().isKinematic = false;
@@ -147,16 +156,16 @@ public class GameManager : MonoBehaviour
         {
             case GameState.Start:
                 SceneManager.LoadScene(SceneName.MAINMENU);
+                UI_Gameplay_Mechanic.main.SetCanvasActive(false);
                 gameStateUpdate = false;
                 break;
 
             case GameState.New:
                 SceneManager.LoadScene(SceneName.GAME);
-                
+
                 break;
 
             case GameState.Playing:
-                //upgradeMenu.GetComponent<UI_Panel_Slider>().ScrollOut();
                 upgradeMenu.enabled = false;
 
                 CheckUpgradeAvailability();
@@ -166,7 +175,6 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.Pausing:
-                //upgradeMenu.GetComponent<UI_Panel_Slider>().ScrollIn();
                 upgradeMenu.enabled = true;
                 gameStateUpdate = false;
 
@@ -183,19 +191,19 @@ public class GameManager : MonoBehaviour
 
     private void CheckUpgradeAvailability()
     {
-        for (int i = 0; i < upgradeData.Stats.Length; i++)
+        for (int i = 0; i < UpgradeData.main.Stats.Length; i++)
         {
-            if (money < upgradeData.Stats[i].cost)
+            if (money < UpgradeData.main.Stats[i].cost)
             {
-                upgradeData.Stats[i].available = false;
+                UpgradeData.main.Stats[i].available = false;
             }
-            else upgradeData.Stats[i].available = true;
+            else UpgradeData.main.Stats[i].available = true;
         }
     }
 
     private void CheckPlayerHealth()
     {
-        if (player.Health <= 0)
+        if (player.CurrentHealth <= 0)
         {
             gameState = GameState.Lose;
         }
@@ -203,7 +211,7 @@ public class GameManager : MonoBehaviour
 
     private void CheckPlayerCaffeineLevel()
     {
-        if (player.CaffeineLevel <= 0)
+        if (player.CaffeineCurrentLevel <= 0)
         {
             gameState = GameState.Lose;
         }
@@ -258,13 +266,13 @@ public class GameManager : MonoBehaviour
     public void PurchaseUpgrade(int statID)
     {
         // Request upgrade
-        if (upgradeData.CheckUpgradeAvailability(statID) && money >= upgradeData.Stats[statID].cost)
+        if (UpgradeData.main.CheckUpgradeAvailability(statID) && money >= UpgradeData.main.Stats[statID].cost)
         {
             // Purchase & deduct money
-            AddMoney(-upgradeData.PurchaseUpgrade(statID));
+            AddMoney(-UpgradeData.main.PurchaseUpgrade(statID));
 
             // Update upgrade stat
-            upgradeData.UpdateStat(statID);
+            UpgradeData.main.UpdateStat(statID);
 
             // Update gameplay stat
             UpgadeGameplayStats(statID);
@@ -283,6 +291,7 @@ public class GameManager : MonoBehaviour
                 break;
             case 2:
                 player.UpgradeMaxFuel();
+                coffee_O_Meter.SetBarLevel(UpgradeData.main.Stats[statID].level);
                 break;
             default:
                 break;

@@ -5,19 +5,17 @@ using UnityEngine.UI;
 
 public class UI_WalletMonitoring : MonoBehaviour
 {
-    private GameManager gameManager;
     private Text textField;
 
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        textField = GetComponent<Text>();
+        TryGetComponent(out textField);
     }
 
     void Update()
     {
         //Always display the current number of money that player has in the text field
-        textField.text = AddSeperatorInLargeNumber(gameManager.CheckWallet);
+        textField.text = AddSeperatorInLargeNumber(GameManager.main.CheckWallet);
     }
 
     private string AddSeperatorInLargeNumber(int number)

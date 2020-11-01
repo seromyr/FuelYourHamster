@@ -6,20 +6,18 @@ using Constants;
 
 public class UI_UpgradeCostMonitoring : MonoBehaviour
 {
-    private GameManager gameManager;
     private int statID;
     private Text textField;
 
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         textField = GetComponent<Text>();
         GetUpgradeStatID();
     }
 
     void Update()
     {
-        textField.text = AddSeperatorInLargeNumber(gameManager.UpgradeData.Stats[statID].cost);
+        textField.text = AddSeperatorInLargeNumber(UpgradeData.main.Stats[statID].cost);
     }
 
     private void GetUpgradeStatID()

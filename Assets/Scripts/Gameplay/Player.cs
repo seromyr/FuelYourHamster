@@ -6,36 +6,27 @@ using Constants;
 
 public class Player : MonoBehaviour
 {
+    public static Player main;
+
     // Gameplay Variables
     private int health;
-    public int Health { get { return health; } }
+    public int CurrentHealth { get { return health; } }
     private int maxHealth;
     public int MaxHealth { get { return maxHealth; } }
 
-    // Input Configurations
-    [SerializeField, Header("Input Configurations")]
-    private KeyCode jump;
-    [SerializeField]
-    private KeyCode dodgeLeft;
-    [SerializeField]
-    private KeyCode dodgeRight;
-    [SerializeField]
-    private KeyCode serveCoffee;
-    [SerializeField]
-    private KeyCode vomitCoffee;
+    [SerializeField, Header("Current Caffeine inside body")]
+    private float caffeineLevel;
+    public float CaffeineCurrentLevel { get { return caffeineLevel; } }
 
-    // Jump mechanic
-    [SerializeField, Header("Jump Mechanics"), Range(1, 20)]
-    private float jumpVelocity;
-    [SerializeField]
-    private float fallMultiplier;
-    [SerializeField]
-    private float lowJumpMultiplier;
-    private Rigidbody rb;
+    public bool IsRunning { get { return caffeineLevel > 0; } }
 
-    [SerializeField]
-    private Side dodgeSide;
-    private Vector3 initLocalPos;
+    public bool RequestCoffee { get { return AskForCoffee(); } }
+
+    private float caffeineMaxLevel, coffeePerServing;
+    public float CaffeineMaxLevel { get { return caffeineMaxLevel; } }
+
+    [SerializeField, Header("Caffeine Digestion Speed")]
+    private float caffeineConsumingSpeed;
 
     // Hit mechanic
     [SerializeField, Header("Collision Color Effects")]
@@ -45,32 +36,18 @@ public class Player : MonoBehaviour
     [SerializeField]
     private SpriteRenderer playerSprite;
 
-    [SerializeField, Header("Current Coffee inside body")]
-    private float caffeineLevel;
-    public float CaffeineLevel { get { return caffeineLevel; } }
-
-    public bool IsRunning { get { return caffeineLevel > 0; } }
-
-    public bool RequestCoffee { get { return AskForCoffee(); } }
-
-    private float caffeineMaxLevel, coffeePerServing;
-
-    [SerializeField, Header("How fast could I digest all this?")]
-    private float consumingSpeed;
-
     // Player get access to vault
     private ObjectReserve.Vault vault01, vault02, vault03;
     private string currentVaultName;
 
-    // Player event
-    public event EventHandler OnCollectCoin;
+    // Token Collection event
+    public event EventHandler OnCollectToken;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        // Make player become a Singleton
+        Singletonizer();
     }
-
-    public float rb_speed;
 
     private void Start()
     {
@@ -78,26 +55,30 @@ public class Player : MonoBehaviour
         maxHealth = 2;
         health = maxHealth;
 
-        // Initialize jump mechanic parameters
-        //fallMultiplier = 2.5f;
-        //lowJumpMultiplier = 2f;
-        fallMultiplier = 7f;
-        lowJumpMultiplier = 4f;
-
-        // Initialize color effects
-        playerSprite = GetComponentInChildren<SpriteRenderer>();
-        playerSprite.color = Color.white;
-
-        dodgeSide = (Side)UnityEngine.Random.Range(1, 3);
-        initLocalPos = transform.localPosition;
-
-        caffeineMaxLevel = 20;
-        coffeePerServing = 20;
+        caffeineMaxLevel = CONST.DEFAULT_MAX_CAFFEINE_LEVEL;
+        coffeePerServing = 20; // For cheating, remember to remove before gold
 
         // Player start with some caffeine in its blood
         caffeineLevel = caffeineMaxLevel;
 
-        consumingSpeed = 5;
+        caffeineConsumingSpeed = CONST.DEFAULT_CAFFEINE_COSUMING_SPEED;
+
+        // Initialize color effects
+        playerSprite = GetComponentInChildren<SpriteRenderer>();
+        playerSprite.color = Color.white;
+    }
+
+    private void Singletonizer()
+    {
+        if (main == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            main = this;
+        }
+        else if (main != this)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void AssignVault()
@@ -110,137 +91,14 @@ public class Player : MonoBehaviour
     private void Update()
     {
         // Player cafein level is continously decreasing
-        DrinkCoffee(- (Time.deltaTime * consumingSpeed));
+        DrinkCoffee(- (Time.deltaTime * caffeineConsumingSpeed));
 
-        // Test 
+        // For cheat/debugging purpose, remember to remove before gold
         if (VomitCoffee()) DrinkCoffee(-coffeePerServing);
         else if (AskForCoffee()) DrinkCoffee(coffeePerServing);
 
         // Prevent cafein level going outside permited range
         CaffeineLevelLimiter();
-    }
-
-    private void FixedUpdate()
-    {
-        // Jump!
-        Jump();
-
-        // Dodge!
-        Dodge();
-
-        rb_speed = rb.velocity.magnitude;
-    }
-
-    private void DrinkCoffee(float amount)
-    {
-        caffeineLevel += amount;
-    }
-
-    private bool AskForCoffee()
-    {
-        return Input.GetKeyDown(serveCoffee);
-    }
-
-    private bool VomitCoffee()
-    {
-        return Input.GetKeyDown(vomitCoffee);
-    }
-
-    private void CaffeineLevelLimiter()
-    {
-        if (caffeineLevel > 100)
-        {
-            caffeineLevel = 100;
-        }
-        else if (caffeineLevel < 0)
-        {
-            caffeineLevel = 0;
-        }
-    }
-
-    public void ResetCaffeineLevel()
-    {
-        caffeineLevel = caffeineMaxLevel;
-    }
-
-    private bool RequestJump()
-    {
-        // Only allow jumping when player is grounded
-        // This could cause double jump
-        //if (rb.velocity.magnitude >= 1f && rb.velocity.magnitude <= 1.2f)
-        if (transform.position.y >= 1.4f && transform.position.y <= 1.7f)
-            return Input.GetKey(jump);
-        // Otherwise the key pressed has no effect
-        else return false;
-        //else return Input.GetKeyDown(KeyCode.None);
-    }
-
-    private void Jump()
-    {
-        // Basic jump
-        if (RequestJump())
-        {
-            rb.velocity = Vector3.up * jumpVelocity;
-        }
-
-        // The longer the jump button is hold the higher jump player makes
-        if (rb.velocity.y < 0)
-        {
-            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
-        }
-
-        else if (rb.velocity.y > 0 && !Input.GetKey(jump))
-        {
-            rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
-        }
-    }
-
-    private bool RequestDodge()
-    {
-        if (Input.GetKey(dodgeLeft))
-        {
-            dodgeSide = Side.Left;
-            return Input.GetKey(dodgeLeft);
-        }
-        else if (Input.GetKey(dodgeRight))
-        {
-            dodgeSide = Side.Right;
-            return Input.GetKey(dodgeRight);
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private void Dodge()
-    {
-        if (RequestDodge())
-        {
-            if (dodgeSide == Side.Left)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, -25);
-                transform.localPosition = new Vector3(initLocalPos.x + 3f, transform.localPosition.y, transform.localPosition.z);
-                currentVaultName = vault03.name;
-            }
-            else
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 25);
-                transform.localPosition = new Vector3(initLocalPos.x - 3f, transform.localPosition.y, transform.localPosition.z);
-                currentVaultName = vault01.name;
-            }
-        }
-        else
-        {
-            transform.rotation = Quaternion.identity;
-            transform.localPosition = new Vector3(initLocalPos.x, transform.localPosition.y, transform.localPosition.z);
-            currentVaultName = vault02.name;
-        }
-    }
-
-    public void ResetHealth()
-    {
-        health = maxHealth;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -267,8 +125,45 @@ public class Player : MonoBehaviour
             CollectiblePooling();
 
             // Send event notification that player has collected a coin
-            OnCollectCoin?.Invoke(this, EventArgs.Empty);
+            OnCollectToken?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    private void DrinkCoffee(float amount)
+    {
+        caffeineLevel += amount;
+    }
+
+    private bool AskForCoffee()
+    {
+        return Input.GetKeyDown(KeyCode.Return);
+    }
+
+    private bool VomitCoffee()
+    {
+        return Input.GetKeyDown(KeyCode.Backspace);
+    }
+
+    private void CaffeineLevelLimiter()
+    {
+        if (caffeineLevel > 100)
+        {
+            caffeineLevel = 100;
+        }
+        else if (caffeineLevel < 0)
+        {
+            caffeineLevel = 0;
+        }
+    }
+
+    public void ResetCaffeineLevel()
+    {
+        caffeineLevel = caffeineMaxLevel;
+    }
+
+    public void ResetHealth()
+    {
+        health = maxHealth;
     }
 
     private void CollectiblePooling()
@@ -308,7 +203,6 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-
     private IEnumerator ColorSwitch(Color color1, Color color2)
     {
         for (int i = 0; i < 5; i++)
@@ -324,7 +218,7 @@ public class Player : MonoBehaviour
 
     public void UpgradeFuelEfficiency()
     {
-        consumingSpeed -= 0.75f;
+        caffeineConsumingSpeed -= 0.75f;
     }
 
     public void UpgradeMaxHealth()
@@ -335,5 +229,16 @@ public class Player : MonoBehaviour
     public void UpgradeMaxFuel()
     {
         caffeineMaxLevel += 20;
+    }
+
+    public void IsInLaneNumber(int value)
+    {
+        switch (value)
+        {
+            case 1: currentVaultName = vault01.name; break;
+            case 2: currentVaultName = vault02.name; break;
+            case 3: currentVaultName = vault03.name; break;
+            default: break;
+        }
     }
 }

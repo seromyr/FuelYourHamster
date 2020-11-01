@@ -5,13 +5,11 @@ using UnityEngine.UI;
 
 public class UI_PurchaseMonitoring : MonoBehaviour
 {
-    private GameManager gameManager;
     private int statID;
     private Button button;
 
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         button = GetComponent<Button>();
         GetUpgradeStatID();
 
@@ -20,7 +18,7 @@ public class UI_PurchaseMonitoring : MonoBehaviour
 
     void Update()
     {
-        button.interactable = gameManager.UpgradeData.Stats[statID].available;
+        button.interactable = UpgradeData.main.Stats[statID].available;
     }
 
     private void GetUpgradeStatID()
@@ -47,6 +45,6 @@ public class UI_PurchaseMonitoring : MonoBehaviour
 
     private void PurchaseAction()
     {
-        gameManager.PurchaseUpgrade(statID);
+        GameManager.main.PurchaseUpgrade(statID);
     }
 }

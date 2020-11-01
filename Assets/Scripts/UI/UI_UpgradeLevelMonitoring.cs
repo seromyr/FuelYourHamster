@@ -6,20 +6,18 @@ using Constants;
 
 public class UI_UpgradeLevelMonitoring : MonoBehaviour
 {
-    private GameManager gameManager;
     private Image image;
     private int statID;
 
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        image = GetComponent<Image>();
+        TryGetComponent(out image);
         GetUpgradeStatID();
     }
 
     void Update()
     {
-        image.fillAmount = (float)gameManager.UpgradeData.Stats[statID].level / 10;
+        image.fillAmount = (float)UpgradeData.main.Stats[statID].level / UpgradeData.main.Stats[statID].maxLevel;
     }
 
     private void GetUpgradeStatID()

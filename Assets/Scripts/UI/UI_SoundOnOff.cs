@@ -35,11 +35,11 @@ public class UI_SoundOnOff : MonoBehaviour
         switch (audioComponent)
         {
             case AudioComponent.MUSIC:
-                soundController.MusicSwitch();
+                soundController.SwitchMusicState();
                 btnText.text = audioComponent + " " + soundController.MusicState;
                 break;
             case AudioComponent.SOUND:
-                soundController.SoundSwitch();
+                soundController.SwitchSoundState();
                 btnText.text = audioComponent + " " + soundController.SoundState;
                 break;
         }

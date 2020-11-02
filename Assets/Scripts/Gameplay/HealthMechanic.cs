@@ -14,7 +14,7 @@ public class HealthMechanic : MonoBehaviour
 
     void Start()
     {
-        healthGraphics.AddRange( GetComponentsInChildren<Image>());
+        healthGraphics.AddRange(GetComponentsInChildren<Image>());
 
         for (int i = Player.main.MaxHealth; i < healthGraphics.Count; i++)
         {

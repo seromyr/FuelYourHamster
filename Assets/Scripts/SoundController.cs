@@ -6,12 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class SoundController : MonoBehaviour
 {
-    public List<AudioClip> playList;
+    public static SoundController main;
 
-    private AudioSource audioSource;
-    private string soundComponent, musicComponent;
-    public string SoundComponent { get { return soundComponent; } }
-    public string MusicComponent { get { return musicComponent; } }
+    private List<AudioClip> musicLibrary, soundLibrary;
+    public List<AudioClip> SoundLibrary { get { return soundLibrary; } }
+
+    private AudioSource musicSource;
+
+    public string SoundComponent { get { return AudioComponent.SOUND; } }
+    public string MusicComponent { get { return AudioComponent.MUSIC; } }
 
     private AudioState soundState, musicState;
     public AudioState SoundState { get { return soundState; } }
@@ -19,66 +22,107 @@ public class SoundController : MonoBehaviour
 
     void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
+        Singletonizer();
 
-        soundComponent = AudioComponent.SOUND;
-        musicComponent = AudioComponent.MUSIC;
+        GameObject musicPlayer = new GameObject("MusicPlayer");
+        musicPlayer.transform.SetParent(transform);
+        musicSource = musicPlayer.AddComponent<AudioSource>();
 
         soundState = AudioState.On;
         musicState = AudioState.On;
 
-        if (playList.Count > 0)
+        musicLibrary = new List<AudioClip>();
+        musicLibrary.AddRange(Resources.LoadAll<AudioClip>("SFX/Musics"));
+
+        soundLibrary = new List<AudioClip>();
+        soundLibrary.AddRange(Resources.LoadAll<AudioClip>("SFX/Sounds"));
+    }
+
+    private void Start()
+    {
+        if (musicLibrary.Count > 0)
         {
-            audioSource.clip = playList[0];
+            musicSource.clip = musicLibrary[0];
         }
 
-        audioSource.Play();
-        audioSource.loop = true;
-
+        musicSource.volume = 0.5f;
+        musicSource.playOnAwake = false;
+        musicSource.Play();
+        musicSource.loop = true;
     }
 
-    private void OnLevelWasLoaded()
+    private void Singletonizer()
     {
-        SongAssign();
+        if (main == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            Debug.Log("Sound Controller created");
+            main = this;
+        }
+        else if (main != this)
+        {
+            Destroy(gameObject);
+        }
     }
     
-    private void SongAssign()
+    public void SwitchBGM()
     {
         if (SceneManager.GetActiveScene().name == SceneName.MAINMENU)
         {
-            if (playList.Count > 0)
+            if (musicLibrary.Count > 0)
             {
-                audioSource.clip = playList[0];
+                musicSource.clip = musicLibrary[0];
             }
         }
         else if (SceneManager.GetActiveScene().name == SceneName.GAME)
         {
-            if (playList.Count > 1)
+            if (musicLibrary.Count > 1)
             {
-                audioSource.clip = playList[1];
+                musicSource.clip = musicLibrary[1];
             }
         }
-
-        if (playList != null) audioSource.Play();
     }
 
-    public void MusicSwitch()
+    public void SwitchMusicState()
     {
         switch (musicState)
         {
             case AudioState.On:
                 musicState = AudioState.Off;
-                audioSource.volume = 0;
+                musicSource.volume = 0;
                 break;
             case AudioState.Off:
                 musicState = AudioState.On;
-                audioSource.volume = 1;
+                musicSource.volume = 1;
                 break;
         }
     }
 
-    public void SoundSwitch()
+    public void PlayBGM()
+    {
+        if (musicLibrary != null) musicSource.Play();
+    }
+
+    public void SwitchSoundState()
     {
         soundState = soundState == AudioState.Off ? AudioState.On : AudioState.Off;
+    }
+
+    public AudioSource CreateASoundPlayer(Transform owner)
+    {
+        GameObject soundPlayer = new GameObject("SoundPlayer of" + owner.name);
+        soundPlayer.transform.SetParent(owner);
+
+        AudioSource thisAutioSource = soundPlayer.AddComponent<AudioSource>();
+        thisAutioSource.playOnAwake = false;
+        thisAutioSource.loop = false;
+
+        return thisAutioSource;
+    }
+
+    public void PlaySound(AudioSource soundPlayer,AudioClip sound)
+    {
+        soundPlayer.clip = sound;
+        soundPlayer.Play();
     }
 }

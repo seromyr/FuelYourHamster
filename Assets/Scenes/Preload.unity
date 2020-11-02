@@ -406,8 +406,8 @@ RectTransform:
   - {fileID: 544553233}
   - {fileID: 815670116}
   - {fileID: 2125227236}
-  m_Father: {fileID: 2102889473}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -423,12 +423,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 177527120}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3c3400b121f861458fc34dee9a7edbd, type: 3}
+  m_Script: {fileID: 11500000, guid: 5000fb764512d544d98d51ffb037bca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 1
   speed: 1
-  fadeType: 0
+  fadeType: 2
 --- !u!114 &177527123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -994,7 +994,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &422916095
 GameObject:
@@ -2103,6 +2103,7 @@ GameObject:
   - component: {fileID: 812275204}
   - component: {fileID: 812275203}
   - component: {fileID: 812275202}
+  - component: {fileID: 812275205}
   m_Layer: 5
   m_Name: CreditButton
   m_TagString: Untagged
@@ -2172,43 +2173,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 812275203}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2083688230}
-        m_TargetAssemblyTypeName: SelfFading, Assembly-CSharp
-        m_MethodName: FadeOut
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 177527122}
-        m_TargetAssemblyTypeName: SelfFading, Assembly-CSharp
-        m_MethodName: FadeIn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 815670113}
-        m_TargetAssemblyTypeName: SelfScrolling, Assembly-CSharp
-        m_MethodName: Scroll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &812275203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2247,6 +2212,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 812275200}
   m_CullTransparentMesh: 0
+--- !u!114 &812275205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812275200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9f610b6097595048bdb4b0c145817e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &815670112
 GameObject:
   m_ObjectHideFlags: 0
@@ -3704,7 +3681,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1056382683}
   - component: {fileID: 1056382685}
-  - component: {fileID: 1056382684}
   - component: {fileID: 1056382686}
   m_Layer: 0
   m_Name: SoundController
@@ -3720,110 +3696,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1056382682}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1735345723}
-  m_Father: {fileID: 2102889473}
-  m_RootOrder: 4
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &1056382684
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1056382682}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &1056382685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3836,9 +3716,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e82acbbc0eb336b4ca4ac241559ef9ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playList:
-  - {fileID: 8300000, guid: 2db79d8c20c95e2448da752520759174, type: 3}
-  - {fileID: 8300000, guid: 1642b0f401ed4ad43bc6dc34b202f15d, type: 3}
 --- !u!81 &1056382686
 AudioListener:
   m_ObjectHideFlags: 0
@@ -5561,7 +5438,7 @@ RectTransform:
   - {fileID: 1722634321}
   - {fileID: 1289016367}
   m_Father: {fileID: 2102889473}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -7304,7 +7181,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -7323,8 +7200,8 @@ RectTransform:
   - {fileID: 575495335}
   - {fileID: 812275201}
   - {fileID: 1852264864}
-  m_Father: {fileID: 2102889473}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -7449,10 +7326,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1024855389}
-  - {fileID: 2083688235}
-  - {fileID: 177527121}
   - {fileID: 1632885285}
-  - {fileID: 1056382683}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7543,6 +7417,7 @@ GameObject:
   - component: {fileID: 2125227239}
   - component: {fileID: 2125227238}
   - component: {fileID: 2125227237}
+  - component: {fileID: 2125227240}
   m_Layer: 5
   m_Name: ReturnButton
   m_TagString: Untagged
@@ -7611,43 +7486,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2125227238}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2083688230}
-        m_TargetAssemblyTypeName: SelfFading, Assembly-CSharp
-        m_MethodName: FadeIn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 177527122}
-        m_TargetAssemblyTypeName: SelfFading, Assembly-CSharp
-        m_MethodName: FadeOut
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 815670113}
-        m_TargetAssemblyTypeName: SelfScrolling, Assembly-CSharp
-        m_MethodName: ScrollReset
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2125227238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7686,6 +7525,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2125227235}
   m_CullTransparentMesh: 0
+--- !u!114 &2125227240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125227235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c07f8f8b2715a62498e6a88e628658db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4786804449910406385
 GameObject:
   m_ObjectHideFlags: 0
@@ -7695,7 +7546,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4786804449910406398}
-  - component: {fileID: 4786804449910406396}
   - component: {fileID: 4786804449910406397}
   - component: {fileID: 4786804449910406394}
   - component: {fileID: 4786804449910406399}
@@ -7740,19 +7590,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
---- !u!135 &4786804449910406396
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4786804449910406385}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!136 &4786804449910406397
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -8930,7 +8767,7 @@ RectTransform:
   - {fileID: 6476783358486921102}
   - {fileID: 6476783357966313549}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

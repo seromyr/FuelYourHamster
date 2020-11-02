@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
         if (main == null)
         {
             DontDestroyOnLoad(gameObject);
+            Debug.Log("Game Manager created");
             main = this;
         }
         else if (main != this)
@@ -111,6 +112,8 @@ public class GameManager : MonoBehaviour
                 // Activate Main Menu UI
                 mainMenu.enabled = true;
 
+                SoundController.main.SwitchBGM();
+                SoundController.main.PlayBGM();
                 break;
 
             case SceneName.GAME:
@@ -118,6 +121,10 @@ public class GameManager : MonoBehaviour
                 //gameOverMenu.renderMode = RenderMode.ScreenSpaceCamera;
                 //gameOverMenu.worldCamera = Camera.main;
                 //gameOverMenu.planeDistance = 1;
+
+                SoundController.main.SwitchBGM();
+                SoundController.main.PlayBGM();
+
                 UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
                 UI_Gameplay_Mechanic.main.SetCanvasActive(true);
 
@@ -162,7 +169,7 @@ public class GameManager : MonoBehaviour
 
             case GameState.New:
                 SceneManager.LoadScene(SceneName.GAME);
-
+                //gameStateUpdate = false;
                 break;
 
             case GameState.Playing:
@@ -229,6 +236,7 @@ public class GameManager : MonoBehaviour
     public void NewGame()
     {
         gameStateUpdate = true;
+        //StartCoroutine(SwitchGameStateWithDelay(GameState.New, 0.2f));
         gameState = GameState.New;
     }
 
@@ -252,6 +260,11 @@ public class GameManager : MonoBehaviour
         gameState = GameState.Lose;
     }
 
+    private IEnumerator SwitchGameStateWithDelay(GameState state, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gameState = state;
+    }
     private void PlayerCollectedACoin(object sender, EventArgs e)
     {
         // A coin equals a unit of money
@@ -293,7 +306,13 @@ public class GameManager : MonoBehaviour
                 player.UpgradeMaxFuel();
                 coffee_O_Meter.SetBarLevel(UpgradeData.main.Stats[statID].level);
                 break;
+            case 3:
+                break;
+            case 4:
+                player.UpgradeMoneyMagnet();
+                break;
             default:
+                Debug.LogError("Invalid upgrade");
                 break;
         }
     }

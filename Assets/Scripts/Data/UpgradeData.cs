@@ -34,6 +34,7 @@ public class UpgradeData : MonoBehaviour
         if (main == null)
         {
             DontDestroyOnLoad(gameObject);
+            Debug.Log("Upgrade Data created");
             main = this;
         }
         else if (main != this)

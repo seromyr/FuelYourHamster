@@ -43,6 +43,9 @@ public class Player : MonoBehaviour
     // Token Collection event
     public event EventHandler OnCollectToken;
 
+    // Money magnet upgrade
+    private GameObject moneyMagnet;
+
     private void Awake()
     {
         // Make player become a Singleton
@@ -73,6 +76,7 @@ public class Player : MonoBehaviour
         if (main == null)
         {
             DontDestroyOnLoad(gameObject);
+            Debug.Log("Player created");
             main = this;
         }
         else if (main != this)
@@ -146,9 +150,9 @@ public class Player : MonoBehaviour
 
     private void CaffeineLevelLimiter()
     {
-        if (caffeineLevel > 100)
+        if (caffeineLevel > caffeineMaxLevel)
         {
-            caffeineLevel = 100;
+            caffeineLevel = caffeineMaxLevel;
         }
         else if (caffeineLevel < 0)
         {
@@ -229,6 +233,11 @@ public class Player : MonoBehaviour
     public void UpgradeMaxFuel()
     {
         caffeineMaxLevel += 20;
+    }
+    public void UpgradeMoneyMagnet()
+    {
+        moneyMagnet = new GameObject("MoneyMagnet");
+        moneyMagnet.AddComponent<MoneyMagnet>();
     }
 
     public void IsInLaneNumber(int value)

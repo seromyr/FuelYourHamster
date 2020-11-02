@@ -19,6 +19,7 @@ public class UI_Gameplay_Mechanic : MonoBehaviour
         if (main == null)
         {
             DontDestroyOnLoad(gameObject);
+            Debug.Log("Gameplay UI created created");
             main = this;
         }
         else if (main != this)

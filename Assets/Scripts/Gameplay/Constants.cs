@@ -39,6 +39,13 @@ namespace Constants
         Off,
     }
 
+    public enum FadeType
+    {
+        None,
+        In,
+        Out
+    }
+
     // Upgrade statistics
     [Serializable]
     public struct UpgradeStat

@@ -17,7 +17,7 @@ public class UI_ViewCredits : MonoBehaviour
     }
     public void ViewCredits()
     {
-        UI_MainMenu.main.FadeOut();
+        UI_MainMenu.main.FadeOut(1);
         UI_Credits.main.FadeIn();
         UI_Credits.main.SelfScroller.Scroll();
         PlaySound();

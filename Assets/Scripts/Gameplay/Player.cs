@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     private float caffeineConsumingSpeed;
 
     // Hit mechanic
+    private Rigidbody rb;
     [SerializeField, Header("Collision Color Effects")]
     private Color hitColor;
     [SerializeField]
@@ -50,6 +51,8 @@ public class Player : MonoBehaviour
     {
         // Make player become a Singleton
         Singletonizer();
+
+        TryGetComponent(out rb);
     }
 
     private void Start()
@@ -234,6 +237,7 @@ public class Player : MonoBehaviour
     {
         caffeineMaxLevel += 20;
     }
+
     public void UpgradeMoneyMagnet()
     {
         moneyMagnet = new GameObject("MoneyMagnet");
@@ -249,5 +253,15 @@ public class Player : MonoBehaviour
             case 3: currentVaultName = vault03.name; break;
             default: break;
         }
+    }
+
+    public void IsKinematic(bool value)
+    {
+        rb.isKinematic = value;
+    }
+
+    public void SetActive(bool value)
+    {
+        gameObject.SetActive(value);
     }
 }

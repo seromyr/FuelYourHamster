@@ -17,7 +17,7 @@ public class UI_Return : MonoBehaviour
     }
     public void Return()
     {
-        UI_MainMenu.main.FadeIn();
+        UI_MainMenu.main.FadeIn(1);
         UI_Credits.main.FadeOut();
         UI_Credits.main.SelfScroller.ScrollReset();
         PlaySound();

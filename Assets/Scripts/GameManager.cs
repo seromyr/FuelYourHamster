@@ -11,47 +11,42 @@ public class GameManager : MonoBehaviour
     public static GameManager main;
 
     [SerializeField]
-    private GameState gameState;
-    private bool gameStateUpdate;
+    private GameState currentGameState, targetGameState;
+    private bool gameStateUpdating;
+    private float loadDuration;
 
-    private string currentScene;
-
-    private Canvas mainMenu, upgradeMenu, gameOverMenu;
-
-    private Player player;
-    private GameObject playerOBJ;
+    private Canvas upgradeMenu, gameOverMenu;
 
     [SerializeField, Header("Current amount of money")]
     private int money;
     public int CheckWallet { get { return money; } }
-
-    //private UpgradeData upgradeData;
-    //// Provide access to upgrade data via Game Manager
-    //public UpgradeData UpgradeData { get { return upgradeData; } }
 
     private CoffeeMeterMechanic coffee_O_Meter;
 
     private void Awake()
     {
         // Make the Game Manager become a Singleton
-        Singletonizer();
+        Singletonize();
 
         // Setup before loading the Main Menu
         PreloadSetup();
 
-        // No state switching occurence
-        gameStateUpdate = false;
+        loadDuration = 1f;
     }
 
     void Start()
     {
+        // Listen to events
+        Player.main.OnCollectToken += PlayerCollectedACoin;
+
         // Initialize money at game start
         money = 10000;
 
-        // Start game
-        GameStart();
+        targetGameState = GameState.Start;
+        gameStateUpdating = true;
+        LoadRoutine();
     }
-    private void Singletonizer()
+    private void Singletonize()
     {
         if (main == null)
         {
@@ -71,87 +66,18 @@ public class GameManager : MonoBehaviour
         gameObject.AddComponent<EventSystem>();
         gameObject.AddComponent<StandaloneInputModule>();
 
-        // Get current scene index to load the next screen which is Main Menu
-        currentScene = SceneManager.GetActiveScene().name;
-
-        // Get Main Menu canvas
-        mainMenu = GameObject.Find("Main Menu").GetComponent<Canvas>();
-        mainMenu.enabled = false;
-
-        // Get Upgrade Menu canvas
+        // Get Upgrade Menu canvas - REMEMBER TO SINGLETONIZE THIS
         upgradeMenu = GameObject.Find("Upgrade Menu").GetComponent<Canvas>();
         upgradeMenu.enabled = false;
 
-        //// Get Upgrade data 
-        //upgradeData = GetComponent<UpgradeData>();
-
-        // Get Lose canvas
+        // Get Lose canvas - REMEMBER TO SINGLETONIZE THIS
         gameOverMenu = GameObject.Find("Game Over Menu").GetComponent<Canvas>();
         gameOverMenu.enabled = false;
-
-        // Find Player
-        playerOBJ = GameObject.Find(PrimeObj.PLAYER);
-        player = playerOBJ.GetComponent<Player>();
-
-        // Listen to events
-        player.OnCollectToken += PlayerCollectedACoin;
-    }
-
-    private void OnLevelWasLoaded()
-    {
-        currentScene = SceneManager.GetActiveScene().name;
-        switch (currentScene)
-        {
-            case SceneName.PRELOAD:
-                // This will never happen
-                break;
-
-            case SceneName.MAINMENU:
-                Debug.Log("Main Menu loaded");
-
-                // Activate Main Menu UI
-                mainMenu.enabled = true;
-
-                SoundController.main.SwitchBGM();
-                SoundController.main.PlayBGM();
-                break;
-
-            case SceneName.GAME:
-                Debug.Log("Gameplay loaded");
-                //gameOverMenu.renderMode = RenderMode.ScreenSpaceCamera;
-                //gameOverMenu.worldCamera = Camera.main;
-                //gameOverMenu.planeDistance = 1;
-
-                SoundController.main.SwitchBGM();
-                SoundController.main.PlayBGM();
-
-                UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
-                UI_Gameplay_Mechanic.main.SetCanvasActive(true);
-
-                playerOBJ.SetActive(true);
-                playerOBJ.GetComponent<Rigidbody>().isKinematic = false;
-                player.AssignVault();
-
-                // Switch state to playing
-                gameState = GameState.Playing;
-
-                gameStateUpdate = true;
-
-                // Deactivate Main Menu
-                mainMenu.enabled = false;
-
-                // Activate Upgrade Menu
-                upgradeMenu.enabled = true;
-
-                // Deactivate Game Over Menu
-                gameOverMenu.enabled = false;
-                break;
-        }
     }
 
     private void Update()
     {
-        if (gameStateUpdate)
+        if (gameStateUpdating)
         {
             GameStateMonitoring();
         }
@@ -159,41 +85,99 @@ public class GameManager : MonoBehaviour
 
     private void GameStateMonitoring()
     {
-        switch (gameState)
+        switch (currentGameState)
+        {
+            case GameState.Loading: LoadRoutine();      break;
+            case GameState.Start:   MainMenuRoutine();  break;
+            case GameState.New:     NewGameRoutine();   break;
+            case GameState.Playing: PerformGameplay();  break;
+            case GameState.Pausing: PauseGamePlay();    break;
+            case GameState.Lose:    ShowSummary();      break;
+            case GameState.Win:     ShowVictory();      break;
+        }
+    }
+
+    private void LoadRoutine()
+    {
+        UI_MainMenu.main.FadeOut(loadDuration + 1f);
+
+        UI_LoadingScreen.main.SetCanvasActiveWithDelay(true, loadDuration);
+        UI_LoadingScreen.main.SetCanvasActiveWithDelay(false, loadDuration + 1.5f);
+        
+        Player.main.IsKinematic(true);
+        Player.main.SetActive(false);
+        Player.main.ResetHealth();
+        Player.main.ResetCaffeineLevel();
+
+        switch (targetGameState)
         {
             case GameState.Start:
-                SceneManager.LoadScene(SceneName.MAINMENU);
-                UI_Gameplay_Mechanic.main.SetCanvasActive(false);
-                gameStateUpdate = false;
-                break;
+                StartCoroutine(LoadSceneWithDelay(SceneName.MAINMENU, loadDuration));
 
+                break;
             case GameState.New:
-                SceneManager.LoadScene(SceneName.GAME);
-                //gameStateUpdate = false;
-                break;
-
-            case GameState.Playing:
-                upgradeMenu.enabled = false;
-
-                CheckUpgradeAvailability();
-                CheckPlayerHealth();
-                CheckPlayerCaffeineLevel();
-
-                break;
-
-            case GameState.Pausing:
-                upgradeMenu.enabled = true;
-                gameStateUpdate = false;
-
-                break;
-
-            case GameState.Lose:
-                // Show lose game screen
-                gameOverMenu.enabled = true;
-                gameStateUpdate = false;
-
+                StartCoroutine(LoadSceneWithDelay(SceneName.GAME, loadDuration));
                 break;
         }
+
+        StartCoroutine(SwitchGameStateWithDelay(targetGameState, loadDuration));
+
+        gameStateUpdating = false;
+    }
+
+    private void MainMenuRoutine()
+    {
+        UI_Gameplay_Mechanic.main.SetCanvasActive(false);
+        UI_MainMenu.main.FadeIn(1f);
+
+        gameStateUpdating = false;
+    }
+
+    private void NewGameRoutine()
+    {
+        StartCoroutine(SwitchGameStateWithDelay(GameState.Playing, 1f));
+
+        UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
+        UI_Gameplay_Mechanic.main.SetCanvasActive(true);
+
+        gameOverMenu.enabled = false;
+        upgradeMenu.enabled = false;
+
+        Player.main.SetActive(true);
+        Player.main.IsKinematic(false);
+        Player.main.AssignVault();
+
+        gameStateUpdating = false;
+    }
+
+    private void PerformGameplay()
+    {
+        gameStateUpdating = true;
+
+        CheckUpgradeAvailability();
+        CheckPlayerHealth();
+        CheckPlayerCaffeineLevel();
+    }
+
+    private void PauseGamePlay()
+    {
+        upgradeMenu.enabled = true;
+    }
+
+    private void ShowHowToPlay(bool value)
+    {
+
+    }
+
+    private void ShowSummary()
+    {
+        // Show lose game screen
+        gameOverMenu.enabled = true;
+    }
+
+    private void ShowVictory()
+    {
+
     }
 
     private void CheckUpgradeAvailability()
@@ -210,61 +194,39 @@ public class GameManager : MonoBehaviour
 
     private void CheckPlayerHealth()
     {
-        if (player.CurrentHealth <= 0)
+        if (Player.main.CurrentHealth <= 0)
         {
-            gameState = GameState.Lose;
+            currentGameState = GameState.Lose;
         }
     }
 
     private void CheckPlayerCaffeineLevel()
     {
-        if (player.CaffeineCurrentLevel <= 0)
+        if (Player.main.CaffeineCurrentLevel <= 0)
         {
-            gameState = GameState.Lose;
+            currentGameState = GameState.Lose;
         }
-    }
-
-    // PUBLIC METHODS
-    public void GameStart()
-    {
-        gameStateUpdate = true;
-        gameState = GameState.Start;
-        playerOBJ.GetComponent<Rigidbody>().isKinematic = true;
-        playerOBJ.SetActive(false);
-    }
-
-    public void NewGame()
-    {
-        gameStateUpdate = true;
-        //StartCoroutine(SwitchGameStateWithDelay(GameState.New, 0.2f));
-        gameState = GameState.New;
-    }
-
-    public void PauseGame()
-    {
-        gameStateUpdate = true;
-        gameState = GameState.Pausing;
-    }
-
-    public void UnPauseGame()
-    {
-        gameStateUpdate = true;
-        gameState = GameState.New;
-        player.ResetHealth();
-        player.ResetCaffeineLevel();
-    }
-
-    public void LoseGame()
-    {
-        gameStateUpdate = true;
-        gameState = GameState.Lose;
     }
 
     private IEnumerator SwitchGameStateWithDelay(GameState state, float delay)
     {
         yield return new WaitForSeconds(delay);
-        gameState = state;
+        currentGameState = state;
+        gameStateUpdating = true;
     }
+
+    private IEnumerator LoadSceneWithDelay(string sceneName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        SceneManager.LoadScene(sceneName);
+
+        yield return new WaitForSeconds(delay / 2);
+
+        SoundController.main.SwitchBGM();
+        SoundController.main.PlayBGM();
+    }
+
     private void PlayerCollectedACoin(object sender, EventArgs e)
     {
         // A coin equals a unit of money
@@ -297,24 +259,54 @@ public class GameManager : MonoBehaviour
         switch (statID)
         {
             case 0:
-                player.UpgradeFuelEfficiency();
+                Player.main.UpgradeFuelEfficiency();
                 break;
             case 1:
-                player.UpgradeMaxHealth();
+                Player.main.UpgradeMaxHealth();
                 break;
             case 2:
-                player.UpgradeMaxFuel();
+                Player.main.UpgradeMaxFuel();
                 coffee_O_Meter.SetBarLevel(UpgradeData.main.Stats[statID].level);
                 break;
             case 3:
                 break;
             case 4:
-                player.UpgradeMoneyMagnet();
+                Player.main.UpgradeMoneyMagnet();
                 break;
             default:
                 Debug.LogError("Invalid upgrade");
                 break;
         }
+    }
+
+    // PUBLIC METHODS
+    public void GoToTheMainMenu()
+    {
+    }
+
+    public void NewGame()
+    {
+        targetGameState = GameState.New;
+        StartCoroutine(SwitchGameStateWithDelay(GameState.Loading, 1f));
+    }
+
+    public void PauseGame()
+    {
+        gameStateUpdating = true;
+        currentGameState = GameState.Pausing;
+    }
+
+    public void UnPauseGame()
+    {
+        gameStateUpdating = true;
+        targetGameState = GameState.New;
+        currentGameState = GameState.Loading;
+    }
+
+    public void LoseGame()
+    {
+        gameStateUpdating = true;
+        currentGameState = GameState.Lose;
     }
 }
 

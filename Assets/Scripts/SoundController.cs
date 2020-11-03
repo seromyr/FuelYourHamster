@@ -47,7 +47,6 @@ public class SoundController : MonoBehaviour
 
         musicSource.volume = 0.5f;
         musicSource.playOnAwake = false;
-        musicSource.Play();
         musicSource.loop = true;
     }
 

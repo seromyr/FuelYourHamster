@@ -76,14 +76,16 @@ public class UI_MainMenu : MonoBehaviour
         mainMenuGroup.alpha -= Time.deltaTime * speed;
     }
 
-    public void FadeOut()
+    public void FadeOut(float _speed)
     {
+        speed = _speed;
         fadeType = FadeType.Out;
         GetComponent<Canvas>().sortingOrder = 0;
     }
 
-    public void FadeIn()
+    public void FadeIn(float _speed)
     {
+        speed = _speed;
         fadeType = FadeType.In;
         GetComponent<Canvas>().sortingOrder = 1;
         // Rest record time

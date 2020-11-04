@@ -61,7 +61,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         // Health info
-        maxHealth = 2;
+        maxHealth = CONST.DEFAULT_MAX_HEALTH;
         health = maxHealth;
 
         caffeineMaxLevel = CONST.DEFAULT_MAX_CAFFEINE_LEVEL;
@@ -228,17 +228,17 @@ public class Player : MonoBehaviour
 
     public void UpgradeFuelEfficiency()
     {
-        caffeineConsumingSpeed -= 0.75f;
+        caffeineConsumingSpeed -= CONST.CAFFEINE_COSUMING_SPEED_UPGRADE_VALUE;
     }
 
     public void UpgradeMaxHealth()
     {
-        maxHealth += 1;
+        maxHealth += CONST.MAX_HEALTH_UPGRADE_VALUE;
     }
 
     public void UpgradeMaxFuel()
     {
-        caffeineMaxLevel += 20;
+        caffeineMaxLevel += CONST.CAFFEINE_UPGRADE_VALUE;
     }
 
     public void UpgradeHamsterBall()

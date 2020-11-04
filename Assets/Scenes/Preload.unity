@@ -1977,8 +1977,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 64}
-  m_SizeDelta: {x: 256, y: 256}
+  m_AnchoredPosition: {x: -290.83545, y: 14.746521}
+  m_SizeDelta: {x: 231.11768, y: 268.9026}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &608404123
 MonoBehaviour:
@@ -2000,7 +2000,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9fd53c54864d06144a0a68217af62b34, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 919ebd40c7d114c419d4642f2b8f89c3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3852,6 +3852,7 @@ GameObject:
   - component: {fileID: 1024855388}
   - component: {fileID: 1024855387}
   - component: {fileID: 1024855386}
+  - component: {fileID: 1024855390}
   m_Layer: 5
   m_Name: Upgrade Menu
   m_TagString: Untagged
@@ -3931,14 +3932,26 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 291998320}
-  m_Father: {fileID: 2102889473}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1024855390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024855385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 664344069e94504428521682852e12f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1041458139
 GameObject:
   m_ObjectHideFlags: 0
@@ -4433,8 +4446,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -264}
-  m_SizeDelta: {x: 768, y: 300}
+  m_AnchoredPosition: {x: 0, y: -150}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1245314872
 MonoBehaviour:
@@ -4484,9 +4497,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Unfortunately, Nibbles cannot continue
-
-    Time to upgrade...'
+  m_Text: 
 --- !u!222 &1245314874
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4534,7 +4545,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 768, y: 640}
+  m_SizeDelta: {x: 900, y: 640}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1289016368
 MonoBehaviour:
@@ -4872,7 +4883,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: GAME OVER...
+  m_Text: Run Result
 --- !u!222 &1390373319
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5915,6 +5926,7 @@ GameObject:
   - component: {fileID: 1632885288}
   - component: {fileID: 1632885287}
   - component: {fileID: 1632885286}
+  - component: {fileID: 1632885289}
   m_Layer: 5
   m_Name: Game Over Menu
   m_TagString: Untagged
@@ -5935,8 +5947,8 @@ RectTransform:
   m_Children:
   - {fileID: 1722634321}
   - {fileID: 1289016367}
-  m_Father: {fileID: 2102889473}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6003,6 +6015,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!114 &1632885289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632885284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65c312bbf1fd51b4f8bbbb373faf9ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1660398636
 GameObject:
   m_ObjectHideFlags: 0
@@ -7283,7 +7307,7 @@ RectTransform:
   - {fileID: 733353720}
   - {fileID: 1485598838}
   m_Father: {fileID: 2102889473}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -8024,7 +8048,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentGameState: 0
   targetGameState: 0
-  money: 0
+  moneyTotal: 0
 --- !u!4 &2102889473
 Transform:
   m_ObjectHideFlags: 0
@@ -8036,8 +8060,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1024855389}
-  - {fileID: 1632885285}
   - {fileID: 1870490848}
   m_Father: {fileID: 0}
   m_RootOrder: 0

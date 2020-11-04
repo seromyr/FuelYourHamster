@@ -20,11 +20,12 @@ public class GameManager : MonoBehaviour
 
     private GameObject speedometer;
 
-    private Canvas upgradeMenu, gameOverMenu, victoryMenu;
+    private Canvas victoryMenu;
 
     [SerializeField, Header("Current amount of money")]
-    private int money;
-    public int CheckWallet { get { return money; } }
+    private int moneyTotal;
+    private int moneyCurrent;
+    public int CheckWallet { get { return moneyTotal; } }
 
     private CoffeeMeterMechanic coffee_O_Meter;
 
@@ -41,11 +42,11 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Listen to events
+        // Listen to Player events
         Player.main.OnCollectToken += PlayerCollectedACoin;
 
         // Initialize money at game start
-        money = 10000;
+        moneyTotal = 10000;
 
         // Initialize beginning difficulty
         difficulty = Difficulty.Kindergarten;
@@ -74,13 +75,8 @@ public class GameManager : MonoBehaviour
         gameObject.AddComponent<EventSystem>();
         gameObject.AddComponent<StandaloneInputModule>();
 
-        // Get Upgrade Menu canvas - REMEMBER TO SINGLETONIZE THIS
-        upgradeMenu = GameObject.Find("Upgrade Menu").GetComponent<Canvas>();
-        upgradeMenu.enabled = false;
-
-        // Get Lose canvas - REMEMBER TO SINGLETONIZE THIS
-        gameOverMenu = GameObject.Find("Game Over Menu").GetComponent<Canvas>();
-        gameOverMenu.enabled = false;
+        UI_UpgradeMenu.main.SetCanvasAtive(false);
+        UI_RunResultScreen.main.SetCanvasAtive(false);
 
         // Get Victory canvas - uhh singletonize this too?
         victoryMenu = GameObject.Find("Victory Menu").GetComponent<Canvas>();
@@ -152,8 +148,8 @@ public class GameManager : MonoBehaviour
         UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
         UI_Gameplay_Mechanic.main.SetCanvasActive(true);
 
-        gameOverMenu.enabled = false;
-        upgradeMenu.enabled = false;
+        UI_UpgradeMenu.main.SetCanvasAtive(false);
+        UI_RunResultScreen.main.SetCanvasAtive(false);
         victoryMenu.enabled = false;
 
         Player.main.SetActive(true);
@@ -161,6 +157,8 @@ public class GameManager : MonoBehaviour
         Player.main.AssignVault();
 
         speedometer = GameObject.Find("Speedometer");
+
+        moneyCurrent = 0;
 
         gameStateUpdating = false;
     }
@@ -182,7 +180,7 @@ public class GameManager : MonoBehaviour
 
     private void PauseGamePlay()
     {
-        upgradeMenu.enabled = true;
+        UI_UpgradeMenu.main.SetCanvasAtive(true);
     }
 
     private void ShowHowToPlay(bool value)
@@ -193,7 +191,8 @@ public class GameManager : MonoBehaviour
     private void ShowSummary()
     {
         // Show lose game screen
-        gameOverMenu.enabled = true;
+        UI_RunResultScreen.main.SetCanvasAtive(true);
+        UI_RunResultScreen.main.SetSummaryText("Distance: " + speedometer.GetComponent<Speedometer>().Distance + " km\n\n" + "Coins: " + moneyCurrent);
     }
 
     private void ShowVictory()
@@ -205,7 +204,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < UpgradeData.main.Stats.Length; i++)
         {
-            if (money < UpgradeData.main.Stats[i].cost)
+            if (moneyTotal < UpgradeData.main.Stats[i].cost)
             {
                 UpgradeData.main.Stats[i].available = false;
             }
@@ -272,17 +271,18 @@ public class GameManager : MonoBehaviour
     {
         // A coin equals a unit of money
         AddMoney(1);
+        moneyCurrent++;
     }
 
     public void AddMoney(int amount)
     {
-        money += amount;
+        moneyTotal += amount;
     }
 
     public void PurchaseUpgrade(int statID)
     {
         // Request upgrade
-        if (UpgradeData.main.CheckUpgradeAvailability(statID) && money >= UpgradeData.main.Stats[statID].cost)
+        if (UpgradeData.main.CheckUpgradeAvailability(statID) && moneyTotal >= UpgradeData.main.Stats[statID].cost)
         {
             // Purchase & deduct money
             AddMoney(-UpgradeData.main.PurchaseUpgrade(statID));

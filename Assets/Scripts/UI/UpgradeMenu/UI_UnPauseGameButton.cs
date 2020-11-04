@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Constants;
 
-public class UI_UnPauseGame : MonoBehaviour
+public class UI_UnPauseGameButton : MonoBehaviour
 {
     private Button button;
 

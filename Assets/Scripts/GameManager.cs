@@ -12,10 +12,15 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameState currentGameState, targetGameState;
+    private Difficulty difficulty;
+    public Difficulty Difficulty { get { return difficulty; } }
+
     private bool gameStateUpdating;
     private float loadDuration;
 
-    private Canvas upgradeMenu, gameOverMenu;
+    private GameObject speedometer;
+
+    private Canvas upgradeMenu, gameOverMenu, victoryMenu;
 
     [SerializeField, Header("Current amount of money")]
     private int money;
@@ -41,6 +46,9 @@ public class GameManager : MonoBehaviour
 
         // Initialize money at game start
         money = 10000;
+
+        // Initialize beginning difficulty
+        difficulty = Difficulty.Kindergarten;
 
         targetGameState = GameState.Start;
         gameStateUpdating = true;
@@ -73,6 +81,10 @@ public class GameManager : MonoBehaviour
         // Get Lose canvas - REMEMBER TO SINGLETONIZE THIS
         gameOverMenu = GameObject.Find("Game Over Menu").GetComponent<Canvas>();
         gameOverMenu.enabled = false;
+
+        // Get Victory canvas - uhh singletonize this too?
+        victoryMenu = GameObject.Find("Victory Menu").GetComponent<Canvas>();
+        victoryMenu.enabled = false;
     }
 
     private void Update()
@@ -142,10 +154,13 @@ public class GameManager : MonoBehaviour
 
         gameOverMenu.enabled = false;
         upgradeMenu.enabled = false;
+        victoryMenu.enabled = false;
 
         Player.main.SetActive(true);
         Player.main.IsKinematic(false);
         Player.main.AssignVault();
+
+        speedometer = GameObject.Find("Speedometer");
 
         gameStateUpdating = false;
     }
@@ -154,6 +169,12 @@ public class GameManager : MonoBehaviour
     {
         gameStateUpdating = true;
 
+        if (difficulty == Difficulty.Victory)
+        {
+            // change state to win and display victory screen
+        }
+
+        CheckDifficulty();
         CheckUpgradeAvailability();
         CheckPlayerHealth();
         CheckPlayerCaffeineLevel();
@@ -178,6 +199,8 @@ public class GameManager : MonoBehaviour
     private void ShowVictory()
     {
 
+
+        gameStateUpdating = false;
     }
 
     private void CheckUpgradeAvailability()
@@ -206,6 +229,26 @@ public class GameManager : MonoBehaviour
         {
             currentGameState = GameState.Lose;
         }
+    }
+
+    private void CheckDifficulty()
+    {
+        //DIFFICULTY CHART:
+        // distance     difficulty
+        //0-99         kindergarten
+        //100-174      decent
+        //175-224      engaged
+        //225-324      difficult
+        //325-449      lightspeed
+
+        float distance = speedometer.GetComponent<Speedometer>().Distance;
+
+        if (distance < 100f && difficulty != Difficulty.Kindergarten) difficulty = Difficulty.Kindergarten;
+        else if (distance >= 100f && distance <= 174f && difficulty != Difficulty.Decent) difficulty = Difficulty.Decent;
+        else if (distance >= 175f && distance <= 224f && difficulty != Difficulty.Engaged) difficulty = Difficulty.Engaged;
+        else if (distance >= 225f && distance <= 324f && difficulty != Difficulty.Difficult) difficulty = Difficulty.Difficult;
+        else if (distance >= 325f && distance <= 449f && difficulty != Difficulty.Lightspeed) difficulty = Difficulty.Lightspeed;
+        else if (distance >= 450f && difficulty != Difficulty.Victory) difficulty = Difficulty.Victory;
     }
 
     private IEnumerator SwitchGameStateWithDelay(GameState state, float delay)
@@ -269,6 +312,7 @@ public class GameManager : MonoBehaviour
                 coffee_O_Meter.SetBarLevel(UpgradeData.main.Stats[statID].level);
                 break;
             case 3:
+                Player.main.UpgradeHamsterBall();
                 break;
             case 4:
                 Player.main.UpgradeMoneyMagnet();

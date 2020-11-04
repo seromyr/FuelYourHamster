@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18377055, g: 0.22913156, b: 0.30442515, a: 1}
+  m_IndirectSpecularColor: {r: 0.18376991, g: 0.22913101, b: 0.3044243, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &212283005 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6889787084096053916, guid: 2d6ecebaf6866ee4182f909ba72e53de, type: 3}
+  m_PrefabInstance: {fileID: 1035346024}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &213584372
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,7 +884,7 @@ SpriteRenderer:
   m_Size: {x: 10.24, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &638725778
@@ -1069,9 +1074,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 100
-  accelerationSpeed: 10
   speed: 0
   duration: 0
+  speedometer: {fileID: 212283005}
 --- !u!1 &796201563
 GameObject:
   m_ObjectHideFlags: 0
@@ -4852,7 +4857,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh21226
+  m_Name: pb_Mesh70750
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

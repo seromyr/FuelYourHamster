@@ -407,7 +407,7 @@ RectTransform:
   - {fileID: 815670116}
   - {fileID: 2125227236}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -994,7 +994,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &422916095
 GameObject:
@@ -1786,8 +1786,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -290, y: -68.771935}
-  m_SizeDelta: {x: 367, y: 427}
+  m_AnchoredPosition: {x: 0, y: 64}
+  m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &608404123
 MonoBehaviour:
@@ -1809,7 +1809,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fc69130d66299c44eb2a58ae3c02a237, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9fd53c54864d06144a0a68217af62b34, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3586,7 +3586,6 @@ GameObject:
   - component: {fileID: 1024855388}
   - component: {fileID: 1024855387}
   - component: {fileID: 1024855386}
-  - component: {fileID: 1024855390}
   m_Layer: 5
   m_Name: Upgrade Menu
   m_TagString: Untagged
@@ -3666,26 +3665,14 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 291998320}
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_Father: {fileID: 2102889473}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1024855390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1024855385}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a2eafb8337d5c8419f09da2276512f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1041458139
 GameObject:
   m_ObjectHideFlags: 0
@@ -4180,7 +4167,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -150}
+  m_AnchoredPosition: {x: 0, y: -264}
   m_SizeDelta: {x: 768, y: 300}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1245314872
@@ -4231,9 +4218,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Distance:
+  m_Text: 'Unfortunately, Nibbles cannot continue
 
-    Coins:'
+    Time to upgrade...'
 --- !u!222 &1245314874
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4281,7 +4268,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1024, y: 640}
+  m_SizeDelta: {x: 768, y: 640}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1289016368
 MonoBehaviour:
@@ -4619,7 +4606,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Run Result
+  m_Text: GAME OVER...
 --- !u!222 &1390373319
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5585,9 +5572,8 @@ GameObject:
   - component: {fileID: 1632885288}
   - component: {fileID: 1632885287}
   - component: {fileID: 1632885286}
-  - component: {fileID: 1632885289}
   m_Layer: 5
-  m_Name: RunResultScreen
+  m_Name: Game Over Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5606,8 +5592,8 @@ RectTransform:
   m_Children:
   - {fileID: 1722634321}
   - {fileID: 1289016367}
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_Father: {fileID: 2102889473}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5674,18 +5660,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
---- !u!114 &1632885289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1632885284}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8345fa66b2236f44ebfc0ec8589d0c67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1660398636
 GameObject:
   m_ObjectHideFlags: 0
@@ -6647,7 +6621,7 @@ RectTransform:
   m_Children:
   - {fileID: 1225970285}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -7494,7 +7468,7 @@ RectTransform:
   - {fileID: 812275201}
   - {fileID: 1852264864}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -7607,7 +7581,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentGameState: 0
   targetGameState: 0
-  moneyTotal: 0
+  money: 0
 --- !u!4 &2102889473
 Transform:
   m_ObjectHideFlags: 0
@@ -7618,7 +7592,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1024855389}
+  - {fileID: 1632885285}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7910,7 +7886,7 @@ Transform:
   - {fileID: 4786804449952837670}
   - {fileID: 4786804450168596299}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4786804449910406399
 MonoBehaviour:
@@ -9059,7 +9035,7 @@ RectTransform:
   - {fileID: 6476783358486921102}
   - {fileID: 6476783357966313549}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

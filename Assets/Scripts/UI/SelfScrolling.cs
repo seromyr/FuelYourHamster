@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_CreditsSroller : MonoBehaviour
+public class SelfScrolling : MonoBehaviour
 {
     [SerializeField, Header("Start Position")]
     private float startY;

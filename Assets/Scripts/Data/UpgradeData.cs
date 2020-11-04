@@ -12,6 +12,7 @@ public class UpgradeData : MonoBehaviour
     [SerializeField]
     private UpgradeStat[] stats;
     public UpgradeStat[] Stats { get { return stats; } }
+
     public UpgradeStat FuelEfficiency { get { return stats[0]; } }
     public UpgradeStat MaxHealth { get { return stats[1]; } }
     public UpgradeStat MaxFuel { get { return stats[2]; } }

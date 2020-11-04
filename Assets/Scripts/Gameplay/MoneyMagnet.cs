@@ -31,7 +31,7 @@ public class MoneyMagnet : MonoBehaviour
 
         bc = coinCatcher.AddComponent<BoxCollider>();
         bc.size = new Vector3(12, 10, 1);
-        bc.center = Vector3.zero;
+        bc.center = new Vector3(1, 1, 1);
         bc.isTrigger = true;
 
         pos = new Vector3();

@@ -58,12 +58,13 @@ public class Player : MonoBehaviour
     private void Start()
     {
         // Health info
-        maxHealth = CONST.DEFAULT_MAX_HEALTH;
+        maxHealth = 2;
         health = maxHealth;
 
+        caffeineMaxLevel = CONST.DEFAULT_MAX_CAFFEINE_LEVEL;
+        coffeePerServing = 20; // For cheating, remember to remove before gold
 
         // Player start with some caffeine in its blood
-        caffeineMaxLevel = CONST.DEFAULT_MAX_CAFFEINE_LEVEL;
         caffeineLevel = caffeineMaxLevel;
 
         caffeineConsumingSpeed = CONST.DEFAULT_CAFFEINE_COSUMING_SPEED;
@@ -71,8 +72,6 @@ public class Player : MonoBehaviour
         // Initialize color effects
         playerSprite = GetComponentInChildren<SpriteRenderer>();
         playerSprite.color = Color.white;
-
-        coffeePerServing = 20; // For cheating, remember to remove before gold
     }
 
     private void Singletonizer()
@@ -211,7 +210,6 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-
     private IEnumerator ColorSwitch(Color color1, Color color2)
     {
         for (int i = 0; i < 5; i++)
@@ -227,17 +225,17 @@ public class Player : MonoBehaviour
 
     public void UpgradeFuelEfficiency()
     {
-        caffeineConsumingSpeed -= CONST.CAFFEINE_COSUMING_SPEED_UPGRADE_VALUE;
+        caffeineConsumingSpeed -= 0.75f;
     }
 
     public void UpgradeMaxHealth()
     {
-        maxHealth += CONST.MAX_HEALTH_UPGRADE_VALUE;
+        maxHealth += 1;
     }
 
     public void UpgradeMaxFuel()
     {
-        caffeineMaxLevel += CONST.CAFFEINE_UPGRADE_VALUE;
+        caffeineMaxLevel += 20;
     }
 
     public void UpgradeMoneyMagnet()

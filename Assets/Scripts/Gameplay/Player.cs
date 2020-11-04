@@ -47,6 +47,9 @@ public class Player : MonoBehaviour
     // Money magnet upgrade
     private GameObject moneyMagnet;
 
+    // Hamster ball upgrade
+    private GameObject hamsterBall;
+
     private void Awake()
     {
         // Make player become a Singleton
@@ -236,6 +239,12 @@ public class Player : MonoBehaviour
     public void UpgradeMaxFuel()
     {
         caffeineMaxLevel += 20;
+    }
+
+    public void UpgradeHamsterBall()
+    {
+        hamsterBall = new GameObject("HamsterBall");
+        hamsterBall.AddComponent<HamsterBall>();
     }
 
     public void UpgradeMoneyMagnet()

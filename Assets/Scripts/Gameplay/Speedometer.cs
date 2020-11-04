@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 using UnityEngine.UI;
 
 public class Speedometer : MonoBehaviour
@@ -10,16 +11,18 @@ public class Speedometer : MonoBehaviour
     public Text distanceDisplay;
     private float ZERO_ANGLE;
     private float rotationSpeed;
-    
+
     // gameplay variables
-    private WheelMechanic wheel;
+    [SerializeField]
+    private GameObject wheel;
     [SerializeField]
     private float speed;
     [SerializeField]
     private float speedMph;
     [SerializeField]
     private float distance;
-    
+    public float Distance { get { return distance; } }
+
 
     // enums for different speeds and their proper rotations for the display
     private enum Speed { Zero = -125, Twenty = -94, Forty = -65, Sixty = -35, Eighty = 0, Hundred = 32, HundredTwenty = 64, HundredForty = 94 };
@@ -28,7 +31,8 @@ public class Speedometer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        wheel = GameObject.Find("Wheel").GetComponent<WheelMechanic>();
+        wheel = GameObject.Find("Wheel");
+        speed = wheel.GetComponent<WheelMechanic>().Speed;
         distance = 0;
         
         // set speed/rotation/angle stuff
@@ -56,12 +60,18 @@ public class Speedometer : MonoBehaviour
     
     public void TranslateSpeed()
     {
-        speed = wheel.Speed;
-        
-        if (speed > 0 && speed <= 50) speedMph = 20;
-        else if (speed > 50 && speed <= 100) speedMph = 40;
-        else speedMph = 0;
-        // etc.....
+        speed = wheel.GetComponent<WheelMechanic>().Speed;
+
+        switch (GameManager.main.Difficulty)
+        {
+            case Difficulty.Kindergarten: speedMph = 20; break;
+            case Difficulty.Decent: speedMph = 40; break;
+            case Difficulty.Engaged: speedMph = 60; break;
+            case Difficulty.Difficult: speedMph = 80; break;
+            case Difficulty.Lightspeed: speedMph = 100; break;
+            case Difficulty.Victory: speedMph = 120; break;
+            default: speedMph = 0; break;
+        }
     }
 
     private void UpdateTargetRotation()

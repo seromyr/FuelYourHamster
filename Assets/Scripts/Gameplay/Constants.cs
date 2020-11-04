@@ -69,6 +69,17 @@ namespace Constants
         public bool available;
     }
 
+    // there will be 5 in-game difficulties, the last one is for victory
+    public enum Difficulty
+    {
+        Kindergarten,
+        Decent,
+        Engaged,
+        Difficult,
+        Lightspeed,
+        Victory
+    }
+
     public static class SceneName
     {
         public const string PRELOAD  = "Preload";

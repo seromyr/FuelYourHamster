@@ -171,7 +171,7 @@ public class GameManager : MonoBehaviour
 
         if (difficulty == Difficulty.Victory)
         {
-            // change state to win and display victory screen
+            currentGameState = GameState.Win;
         }
 
         CheckDifficulty();
@@ -198,9 +198,7 @@ public class GameManager : MonoBehaviour
 
     private void ShowVictory()
     {
-
-
-        gameStateUpdating = false;
+        victoryMenu.enabled = true;
     }
 
     private void CheckUpgradeAvailability()
@@ -235,11 +233,11 @@ public class GameManager : MonoBehaviour
     {
         //DIFFICULTY CHART:
         // distance     difficulty
-        //0-99         kindergarten
+        //0-99         kindergarten   - easiest
         //100-174      decent
         //175-224      engaged
         //225-324      difficult
-        //325-449      lightspeed
+        //325-449      lightspeed  - hardest
 
         float distance = speedometer.GetComponent<Speedometer>().Distance;
 

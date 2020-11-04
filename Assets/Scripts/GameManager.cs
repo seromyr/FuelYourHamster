@@ -15,11 +15,10 @@ public class GameManager : MonoBehaviour
     private bool gameStateUpdating;
     private float loadDuration;
 
-    private Canvas upgradeMenu, gameOverMenu;
-
     [SerializeField, Header("Current amount of money")]
-    private int money;
-    public int CheckWallet { get { return money; } }
+    private int moneyTotal;
+    private int moneyCurrent;
+    public int CheckWallet { get { return moneyTotal; } }
 
     private CoffeeMeterMechanic coffee_O_Meter;
 
@@ -36,11 +35,11 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Listen to events
+        // Listen to player events
         Player.main.OnCollectToken += PlayerCollectedACoin;
 
         // Initialize money at game start
-        money = 10000;
+        moneyTotal = 10000;
 
         targetGameState = GameState.Start;
         gameStateUpdating = true;
@@ -66,13 +65,8 @@ public class GameManager : MonoBehaviour
         gameObject.AddComponent<EventSystem>();
         gameObject.AddComponent<StandaloneInputModule>();
 
-        // Get Upgrade Menu canvas - REMEMBER TO SINGLETONIZE THIS
-        upgradeMenu = GameObject.Find("Upgrade Menu").GetComponent<Canvas>();
-        upgradeMenu.enabled = false;
-
-        // Get Lose canvas - REMEMBER TO SINGLETONIZE THIS
-        gameOverMenu = GameObject.Find("Game Over Menu").GetComponent<Canvas>();
-        gameOverMenu.enabled = false;
+        UI_UpgradeMenu.main.SetCanvasAtive(false);
+        UI_RunResultScreen.main.SetCanvasAtive(false);
     }
 
     private void Update()
@@ -140,14 +134,16 @@ public class GameManager : MonoBehaviour
         UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
         UI_Gameplay_Mechanic.main.SetCanvasActive(true);
 
-        gameOverMenu.enabled = false;
-        upgradeMenu.enabled = false;
+        UI_RunResultScreen.main.SetCanvasAtive(false);
+        UI_UpgradeMenu.main.SetCanvasAtive(false);
 
         Player.main.SetActive(true);
         Player.main.IsKinematic(false);
         Player.main.AssignVault();
 
         gameStateUpdating = false;
+
+        moneyCurrent = 0;
     }
 
     private void PerformGameplay()
@@ -161,7 +157,7 @@ public class GameManager : MonoBehaviour
 
     private void PauseGamePlay()
     {
-        upgradeMenu.enabled = true;
+        UI_UpgradeMenu.main.SetCanvasAtive(true);
     }
 
     private void ShowHowToPlay(bool value)
@@ -172,19 +168,20 @@ public class GameManager : MonoBehaviour
     private void ShowSummary()
     {
         // Show lose game screen
-        gameOverMenu.enabled = true;
+        UI_RunResultScreen.main.SetCanvasAtive(true);
+        UI_RunResultScreen.main.SetSummaryText("Distance: " + 100 + " km\n\n" + "Coins: " + moneyCurrent);
+
     }
 
     private void ShowVictory()
     {
-
     }
 
     private void CheckUpgradeAvailability()
     {
         for (int i = 0; i < UpgradeData.main.Stats.Length; i++)
         {
-            if (money < UpgradeData.main.Stats[i].cost)
+            if (moneyTotal < UpgradeData.main.Stats[i].cost)
             {
                 UpgradeData.main.Stats[i].available = false;
             }
@@ -231,17 +228,18 @@ public class GameManager : MonoBehaviour
     {
         // A coin equals a unit of money
         AddMoney(1);
+        moneyCurrent++;
     }
 
     public void AddMoney(int amount)
     {
-        money += amount;
+        moneyTotal += amount;
     }
 
     public void PurchaseUpgrade(int statID)
     {
         // Request upgrade
-        if (UpgradeData.main.CheckUpgradeAvailability(statID) && money >= UpgradeData.main.Stats[statID].cost)
+        if (UpgradeData.main.CheckUpgradeAvailability(statID) && moneyTotal >= UpgradeData.main.Stats[statID].cost)
         {
             // Purchase & deduct money
             AddMoney(-UpgradeData.main.PurchaseUpgrade(statID));

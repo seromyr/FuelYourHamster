@@ -110,8 +110,15 @@ namespace Constants
         public const int VAULT_01_CAPACITY = 5;
         public const int VAULT_02_CAPACITY = 9;
         public const int VAULT_03_CAPACITY = 7;
-        public const int DEFAULT_MAX_CAFFEINE_LEVEL = 20;
-        public const int DEFAULT_CAFFEINE_COSUMING_SPEED = 5;
+
+        public const int DEFAULT_MAX_HEALTH = 2;
+        public const int MAX_HEALTH_UPGRADE_VALUE = 1;
+
+        public const int DEFAULT_MAX_CAFFEINE_LEVEL = 100;
+        public const int CAFFEINE_UPGRADE_VALUE = 50;
+
+        public const int DEFAULT_CAFFEINE_COSUMING_SPEED = 10;
+        public const float CAFFEINE_COSUMING_SPEED_UPGRADE_VALUE = 0.75f;
     }
 
     public static class TAG

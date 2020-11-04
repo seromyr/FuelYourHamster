@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Constants;
 
-public class UI_Upgrade : MonoBehaviour
+public class UI_UpgradeButton : MonoBehaviour
 {
     private Button button;
 

@@ -20,14 +20,14 @@ public class UI_Credits : MonoBehaviour
     [SerializeField, Header("Type of fade")]
     private FadeType fadeType;
 
-    private SelfScrolling selfScroller;
-    public SelfScrolling SelfScroller { get { return selfScroller; } } 
+    private UI_CreditsSroller selfScroller;
+    public UI_CreditsSroller SelfScroller { get { return selfScroller; } } 
 
     private void Awake()
     {
         Singletionizer();
         creditsGroup = gameObject.AddComponent<CanvasGroup>();
-        selfScroller = GetComponentInChildren<SelfScrolling>();
+        selfScroller = GetComponentInChildren<UI_CreditsSroller>();
     }
 
     void Start()

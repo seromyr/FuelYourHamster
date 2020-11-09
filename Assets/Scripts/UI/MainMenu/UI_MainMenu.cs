@@ -10,6 +10,7 @@ public class UI_MainMenu : MonoBehaviour
     public static UI_MainMenu main;
 
     private CanvasGroup mainMenuGroup;
+    private Canvas canvas;
     private float time;
 
     [SerializeField, Header("Time to wait until ready to fade")]
@@ -25,6 +26,7 @@ public class UI_MainMenu : MonoBehaviour
     {
         Singletionizer();
         mainMenuGroup = gameObject.AddComponent<CanvasGroup>();
+        TryGetComponent(out canvas);
     }
 
     void Start()
@@ -90,5 +92,10 @@ public class UI_MainMenu : MonoBehaviour
         GetComponent<Canvas>().sortingOrder = 1;
         // Rest record time
         time = Time.time;
+    }
+
+    public void SetCanvasActive(bool value)
+    {
+        canvas.enabled = value;
     }
 }

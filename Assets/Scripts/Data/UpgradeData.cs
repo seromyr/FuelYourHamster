@@ -50,6 +50,7 @@ public class UpgradeData : MonoBehaviour
         stats[0] = new UpgradeStat()
         {
             name = "Fuel Efficiency",
+            description = "Upgrade to reduce fuel consuming speed",
             cost = 50,
             nextCost = 0,
             maxLevel = 5,
@@ -60,6 +61,7 @@ public class UpgradeData : MonoBehaviour
         stats[1] = new UpgradeStat()
         {
             name = "Max Health",
+            description = "Upgrade to increase obstacle damage endurance",
             cost = 15,
             nextCost = 0,
             maxLevel = 5,
@@ -70,7 +72,8 @@ public class UpgradeData : MonoBehaviour
         stats[2] = new UpgradeStat()
         {
             name = "Max Fuel",
-            cost = 15,
+            description = "Upgrade to increase the ability to run longer",
+            cost = 100,
             nextCost = 0,
             maxLevel = 10,
             level = 0,
@@ -80,7 +83,8 @@ public class UpgradeData : MonoBehaviour
         stats[3] = new UpgradeStat()
         {
             name = "Hamster Ball",
-            cost = 15,
+            description = "Upgrade to block more damage from obstacles",
+            cost = 225,
             nextCost = 0,
             maxLevel = 2,
             level = 0,
@@ -90,6 +94,7 @@ public class UpgradeData : MonoBehaviour
         stats[4] = new UpgradeStat()
         {
             name = "Money Magnet",
+            description = "Upgrade to attract surrounding coins",
             cost = 1000,
             nextCost = 0,
             maxLevel = 1,
@@ -100,17 +105,29 @@ public class UpgradeData : MonoBehaviour
 
     public bool CheckUpgradeAvailability(int statID)
     {
-        return (stats[statID].level < stats[statID].maxLevel);
+        return (stats[statID].level < stats[statID].maxLevel); // && stats[statID].cost != -1
+    }
+
+    public bool CheckUpgradeIsAlreadyMax(int statID)
+    {
+        return stats[statID].cost == -1;
     }
 
     public int PurchaseUpgrade(int statID)
     {
         stats[statID].level++;
-        stats[statID].nextCost = stats[statID].cost + 20;
+        stats[statID].nextCost = stats[statID].cost * 2;
         return stats[statID].cost;
     }
     public void UpdateStat(int statID)
     {
-        stats[statID].cost = stats[statID].nextCost;
+        if (stats[statID].level == stats[statID].maxLevel)
+        {
+            stats[statID].cost = -1;
+        }
+        else
+        {
+            stats[statID].cost = stats[statID].nextCost;
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthMechanic : MonoBehaviour
+public class UI_HealthMechanic : MonoBehaviour
 {
     [SerializeField]
     private List<Image> healthGraphics;

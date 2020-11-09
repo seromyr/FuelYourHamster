@@ -18,7 +18,9 @@ public class Player : MonoBehaviour
     private float caffeineLevel;
     public float CaffeineCurrentLevel { get { return caffeineLevel; } }
 
-    public bool IsRunning { get { return caffeineLevel > 0; } }
+    private bool isConsumingFuel;
+    public bool IsConsumingFuel { set { isConsumingFuel = value; } }
+    public bool IsRunning { get { return caffeineLevel > 0 && isConsumingFuel; } }
 
     public bool RequestCoffee { get { return AskForCoffee(); } }
 
@@ -49,6 +51,9 @@ public class Player : MonoBehaviour
 
     // Hamster ball upgrade
     private GameObject hamsterBall;
+    private HamsterBallMechanic hamsterBallMechanic;
+    private int hamsterBallLevel;
+    public int HamsterBallLevel { get { return hamsterBallLevel; } }
 
     private void Awake()
     {
@@ -71,10 +76,13 @@ public class Player : MonoBehaviour
         caffeineLevel = caffeineMaxLevel;
 
         caffeineConsumingSpeed = CONST.DEFAULT_CAFFEINE_COSUMING_SPEED;
+        isConsumingFuel = false;
 
         // Initialize color effects
         playerSprite = GetComponentInChildren<SpriteRenderer>();
         playerSprite.color = Color.white;
+
+        HamsterBallSetup();
     }
 
     private void Singletonizer()
@@ -98,14 +106,25 @@ public class Player : MonoBehaviour
         vault03 = GameObject.Find(PrimeObj.OBJPOOL).GetComponent<ObjectReserve>().Vault03;
     }
 
+    private void HamsterBallSetup()
+    {
+        hamsterBall = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        hamsterBall.name = "HamsterBall";
+        hamsterBall.transform.parent = transform.Find("Mesh");
+        hamsterBall.transform.localPosition = Vector3.zero;
+        hamsterBallMechanic = hamsterBall.AddComponent<HamsterBallMechanic>();
+
+        hamsterBallLevel = CONST.DEFAULT_HAMSTERBALL_LEVEL;
+    }
+
     private void Update()
     {
         // Player cafein level is continously decreasing
-        DrinkCoffee(- (Time.deltaTime * caffeineConsumingSpeed));
+        ConsumingFuel(- (Time.deltaTime * caffeineConsumingSpeed));
 
         // For cheat/debugging purpose, remember to remove before gold
-        if (VomitCoffee()) DrinkCoffee(-coffeePerServing);
-        else if (AskForCoffee()) DrinkCoffee(coffeePerServing);
+        if (VomitCoffee()) ConsumingFuel(-coffeePerServing);
+        else if (AskForCoffee()) ConsumingFuel(coffeePerServing);
 
         // Prevent cafein level going outside permited range
         CaffeineLevelLimiter();
@@ -115,8 +134,15 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag(TAG.OBJBAD))
         {
-            if (health > 0) health -= 1;
-            StartCoroutine(ColorSwitch(Color.white, hitColor));
+            if (hamsterBallMechanic != null && hamsterBallMechanic.IsActive)
+            {
+                hamsterBallMechanic.DegradeSphere();
+            }
+            else
+            {
+                StartCoroutine(ColorSwitch(Color.white, hitColor));
+                if (health > 0) health -= 1;
+            }
             Destroy(other.gameObject);
             CollectiblePooling();
         }
@@ -139,9 +165,12 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void DrinkCoffee(float amount)
+    private void ConsumingFuel(float amount)
     {
-        caffeineLevel += amount;
+        if (isConsumingFuel)
+        {
+            caffeineLevel += amount;
+        }
     }
 
     private bool AskForCoffee()
@@ -174,6 +203,11 @@ public class Player : MonoBehaviour
     public void ResetHealth()
     {
         health = maxHealth;
+    }
+
+    public void ResetHamsterBall()
+    {
+        hamsterBallMechanic.ResetSphere();
     }
 
     private void CollectiblePooling()
@@ -243,8 +277,8 @@ public class Player : MonoBehaviour
 
     public void UpgradeHamsterBall()
     {
-        hamsterBall = new GameObject("HamsterBall");
-        hamsterBall.AddComponent<HamsterBall>();
+        hamsterBallLevel += CONST.HAMSTERBALL_UPGRADE_VALUE;
+        hamsterBallMechanic.ResetSphere();
     }
 
     public void UpgradeMoneyMagnet()

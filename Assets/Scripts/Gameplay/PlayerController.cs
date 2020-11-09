@@ -107,13 +107,13 @@ public class PlayerController : MonoBehaviour
             if (dodgeSide == Side.Left)
             {
                 transform.rotation = Quaternion.Euler(0, 0, -25);
-                transform.localPosition = new Vector3(initLocalPos.x + 3f, transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(initLocalPos.x + 4f, transform.localPosition.y, transform.localPosition.z);
                 Player.main.IsInLaneNumber(3);
             }
             else
             {
                 transform.rotation = Quaternion.Euler(0, 0, 25);
-                transform.localPosition = new Vector3(initLocalPos.x - 3f, transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(initLocalPos.x - 4f, transform.localPosition.y, transform.localPosition.z);
                 Player.main.IsInLaneNumber(1);
             }
         }

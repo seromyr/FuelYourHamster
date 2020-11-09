@@ -9,18 +9,15 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     public static GameManager main;
+    public event EventHandler OnGamePlay;
 
     [SerializeField]
     private GameState currentGameState, targetGameState;
-    private Difficulty difficulty;
-    public Difficulty Difficulty { get { return difficulty; } }
 
-    private bool gameStateUpdating;
+    private bool gameStateUpdating, firstRun;
     private float loadDuration;
 
-    private GameObject speedometer;
-
-    private Canvas victoryMenu;
+    //private GameObject speedometer;
 
     [SerializeField, Header("Current amount of money")]
     private int moneyTotal;
@@ -38,6 +35,8 @@ public class GameManager : MonoBehaviour
         PreloadSetup();
 
         loadDuration = 1f;
+
+        firstRun = true;
     }
 
     void Start()
@@ -46,10 +45,7 @@ public class GameManager : MonoBehaviour
         Player.main.OnCollectToken += PlayerCollectedACoin;
 
         // Initialize money at game start
-        moneyTotal = 10000;
-
-        // Initialize beginning difficulty
-        difficulty = Difficulty.Kindergarten;
+        moneyTotal = 0;
 
         targetGameState = GameState.Start;
         gameStateUpdating = true;
@@ -77,10 +73,7 @@ public class GameManager : MonoBehaviour
 
         UI_UpgradeMenu.main.SetCanvasAtive(false);
         UI_RunResultScreen.main.SetCanvasAtive(false);
-
-        // Get Victory canvas - uhh singletonize this too?
-        victoryMenu = GameObject.Find("Victory Menu").GetComponent<Canvas>();
-        victoryMenu.enabled = false;
+        UI_VictoryScreen.main.SetCanvasAtive(false);
     }
 
     private void Update()
@@ -107,11 +100,23 @@ public class GameManager : MonoBehaviour
 
     private void LoadRoutine()
     {
+        UI_MainMenu.main.SetCanvasActive(true);
         UI_MainMenu.main.FadeOut(loadDuration + 1f);
 
         UI_LoadingScreen.main.SetCanvasActiveWithDelay(true, loadDuration);
         UI_LoadingScreen.main.SetCanvasActiveWithDelay(false, loadDuration + 1.5f);
-        
+
+        if (firstRun)
+        {
+            UI_LoadingScreen.main.SetHint(0);
+            firstRun = false;
+        }
+        else
+        {
+            UI_LoadingScreen.main.SetHint(-1);
+        }
+
+
         Player.main.IsKinematic(true);
         Player.main.SetActive(false);
         Player.main.ResetHealth();
@@ -125,6 +130,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.New:
                 StartCoroutine(LoadSceneWithDelay(SceneName.GAME, loadDuration));
+                UI_LoadingScreen.main.SetHint(1);
                 break;
         }
 
@@ -144,19 +150,30 @@ public class GameManager : MonoBehaviour
     private void NewGameRoutine()
     {
         StartCoroutine(SwitchGameStateWithDelay(GameState.Playing, 1f));
+        UI_MainMenu.main.SetCanvasActive(false);
 
-        UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
-        UI_Gameplay_Mechanic.main.SetCanvasActive(true);
+        // Broadcast gamplay has started
+        OnGamePlay?.Invoke(this, EventArgs.Empty);
 
-        UI_UpgradeMenu.main.SetCanvasAtive(false);
-        UI_RunResultScreen.main.SetCanvasAtive(false);
-        victoryMenu.enabled = false;
-
+        // Player setup
         Player.main.SetActive(true);
         Player.main.IsKinematic(false);
         Player.main.AssignVault();
+        //Player.main.ResetHamsterBall();
 
-        speedometer = GameObject.Find("Speedometer");
+        // Gameplay UI setup
+        UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
+        UI_Gameplay_Mechanic.main.SetCanvasActive(true);
+        UI_Gameplay_Mechanic.main.StartCountDown();
+        UI_UpgradeMenu.main.SetCanvasAtive(false);
+        UI_RunResultScreen.main.SetCanvasAtive(false);
+        UI_VictoryScreen.main.SetCanvasAtive(false);
+
+        // Difficulty setup
+        DiffilcultyController.main.AssignWheel();
+        DiffilcultyController.main.MarkBeginTime();
+        DiffilcultyController.main.MarkTime();
+        DiffilcultyController.main.SetCheckPointTime(CONST.CHECKPOINT_DURATION);
 
         moneyCurrent = 0;
 
@@ -167,12 +184,13 @@ public class GameManager : MonoBehaviour
     {
         gameStateUpdating = true;
 
-        if (difficulty == Difficulty.Victory)
+        if (DiffilcultyController.main.VictoryConditionMet)
         {
             currentGameState = GameState.Win;
         }
 
-        CheckDifficulty();
+        DiffilcultyController.main.RegulateDifficulty();
+        //CheckDistance();
         CheckUpgradeAvailability();
         CheckPlayerHealth();
         CheckPlayerCaffeineLevel();
@@ -190,14 +208,20 @@ public class GameManager : MonoBehaviour
 
     private void ShowSummary()
     {
-        // Show lose game screen
-        UI_RunResultScreen.main.SetCanvasAtive(true);
-        UI_RunResultScreen.main.SetSummaryText("Distance: " + speedometer.GetComponent<Speedometer>().Distance + " km\n\n" + "Coins: " + moneyCurrent);
+        gameStateUpdating = false;
+        StartCoroutine(EndRunSequence());
+
+        // Mark the end time of the run
+        DiffilcultyController.main.MarkEndTime();
     }
 
     private void ShowVictory()
     {
-        victoryMenu.enabled = true;
+        gameStateUpdating = false;
+        UI_VictoryScreen.main.SetCanvasAtive(true);
+
+        // Mark the end time of the run
+        DiffilcultyController.main.MarkEndTime();
     }
 
     private void CheckUpgradeAvailability()
@@ -228,26 +252,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void CheckDifficulty()
-    {
-        //DIFFICULTY CHART:
-        // distance     difficulty
-        //0-99         kindergarten   - easiest
-        //100-174      decent
-        //175-224      engaged
-        //225-324      difficult
-        //325-449      lightspeed  - hardest
-
-        float distance = speedometer.GetComponent<Speedometer>().Distance;
-
-        if (distance < 100f && difficulty != Difficulty.Kindergarten) difficulty = Difficulty.Kindergarten;
-        else if (distance >= 100f && distance <= 174f && difficulty != Difficulty.Decent) difficulty = Difficulty.Decent;
-        else if (distance >= 175f && distance <= 224f && difficulty != Difficulty.Engaged) difficulty = Difficulty.Engaged;
-        else if (distance >= 225f && distance <= 324f && difficulty != Difficulty.Difficult) difficulty = Difficulty.Difficult;
-        else if (distance >= 325f && distance <= 449f && difficulty != Difficulty.Lightspeed) difficulty = Difficulty.Lightspeed;
-        else if (distance >= 450f && difficulty != Difficulty.Victory) difficulty = Difficulty.Victory;
-    }
-
     private IEnumerator SwitchGameStateWithDelay(GameState state, float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -267,6 +271,15 @@ public class GameManager : MonoBehaviour
         SoundController.main.PlayBGM();
     }
 
+    private IEnumerator EndRunSequence()
+    {
+        UI_Gameplay_Mechanic.main.ShowEndRunNotice();
+        yield return new WaitForSeconds(3);
+        // Show lose game screen
+        UI_RunResultScreen.main.SetCanvasAtive(true);
+        UI_RunResultScreen.main.SetSummaryText("Run duration: " + DiffilcultyController.main.RunTime + " " + "\nMax speed: " + DiffilcultyController.main.MaxSpeed + " km/h" + "\nCoins collected: " + moneyCurrent);
+    }
+
     private void PlayerCollectedACoin(object sender, EventArgs e)
     {
         // A coin equals a unit of money
@@ -282,7 +295,7 @@ public class GameManager : MonoBehaviour
     public void PurchaseUpgrade(int statID)
     {
         // Request upgrade
-        if (UpgradeData.main.CheckUpgradeAvailability(statID) && moneyTotal >= UpgradeData.main.Stats[statID].cost)
+        if (AllowUpgradePurchasing(statID))
         {
             // Purchase & deduct money
             AddMoney(-UpgradeData.main.PurchaseUpgrade(statID));
@@ -293,6 +306,11 @@ public class GameManager : MonoBehaviour
             // Update gameplay stat
             UpgadeGameplayStats(statID);
         }
+    }
+
+    public bool AllowUpgradePurchasing(int statID)
+    {
+        return UpgradeData.main.CheckUpgradeAvailability(statID) && moneyTotal >= UpgradeData.main.Stats[statID].cost;
     }
 
     private void UpgadeGameplayStats(int statID)

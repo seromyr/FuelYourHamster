@@ -18,7 +18,13 @@ public class UI_PurchaseMonitoring : MonoBehaviour
 
     void Update()
     {
-        button.interactable = UpgradeData.main.Stats[statID].available;
+        //button.interactable = UpgradeData.main.Stats[statID].available;
+        button.interactable = GameManager.main.AllowUpgradePurchasing(statID);
+
+        if (UpgradeData.main.CheckUpgradeIsAlreadyMax(statID))
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void GetUpgradeStatID()

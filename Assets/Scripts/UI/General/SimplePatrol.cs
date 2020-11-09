@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,10 +29,16 @@ public class SimplePatrol : MonoBehaviour
 
     private float orginalPosition;
 
+    private bool isMoving;
+
     void Start()
     {
         //frequency = 0.5f;
         //distanceModifier = 2f;
+
+        GameManager.main.OnGamePlay += ActivateTheMovement;
+
+        isMoving = false;
 
         switch (direction)
         {
@@ -47,22 +54,45 @@ public class SimplePatrol : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
-        amplitude = Mathf.Sin(Time.time / frequency + offset) * distanceModifier;
-        switch (direction)
-        {
-            case Direction.Right:
-                sineWave = new Vector3(amplitude + orginalPosition, transform.position.y, transform.position.z);
-                break;
-            case Direction.Up:
-                sineWave = new Vector3(transform.position.x, amplitude + orginalPosition, transform.position.z);
-                break;
-            case Direction.Forward:
-                sineWave = new Vector3(transform.position.x, transform.position.y, amplitude + orginalPosition);
-                break;
-        }
+        Patrol();
+    }
 
-        transform.position = sineWave;
+    private void Patrol()
+    {
+        if (isMoving)
+        {
+            amplitude = Mathf.Sin(Time.time / frequency + offset) * distanceModifier;
+            switch (direction)
+            {
+                case Direction.Right:
+                    sineWave = new Vector3(amplitude + orginalPosition, transform.position.y, transform.position.z);
+                    break;
+                case Direction.Up:
+                    sineWave = new Vector3(transform.position.x, amplitude + orginalPosition, transform.position.z);
+                    break;
+                case Direction.Forward:
+                    sineWave = new Vector3(transform.position.x, transform.position.y, amplitude + orginalPosition);
+                    break;
+            }
+
+            transform.position = sineWave;
+        }
+    }
+
+    private void ActivateTheMovement(object sender, EventArgs e)
+    {
+        StartCoroutine(SetPatrolActiveWithDelay(5, true));
+    }
+    private IEnumerator SetPatrolActiveWithDelay(float delay, bool state)
+    {
+        yield return new WaitForSeconds(delay);
+        isMoving = state;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.main.OnGamePlay -= ActivateTheMovement;
     }
 }

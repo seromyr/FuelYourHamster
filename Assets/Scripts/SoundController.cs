@@ -45,7 +45,7 @@ public class SoundController : MonoBehaviour
             musicSource.clip = musicLibrary[0];
         }
 
-        musicSource.volume = 0.5f;
+        musicSource.volume = 0.15f;
         musicSource.playOnAwake = false;
         musicSource.loop = true;
     }

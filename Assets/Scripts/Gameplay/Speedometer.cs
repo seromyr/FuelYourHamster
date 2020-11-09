@@ -60,18 +60,18 @@ public class Speedometer : MonoBehaviour
     
     public void TranslateSpeed()
     {
-        speed = wheel.GetComponent<WheelMechanic>().Speed;
+        //speed = wheel.GetComponent<WheelMechanic>().Speed;
 
-        switch (GameManager.main.Difficulty)
-        {
-            case Difficulty.Kindergarten: speedMph = 20; break;
-            case Difficulty.Decent: speedMph = 40; break;
-            case Difficulty.Engaged: speedMph = 60; break;
-            case Difficulty.Difficult: speedMph = 80; break;
-            case Difficulty.Lightspeed: speedMph = 100; break;
-            case Difficulty.Victory: speedMph = 120; break;
-            default: speedMph = 0; break;
-        }
+        //switch (GameManager.main.Difficulty)
+        //{
+        //    case Difficulty.Kindergarten: speedMph = 20; break;
+        //    case Difficulty.Decent: speedMph = 40; break;
+        //    case Difficulty.Engaged: speedMph = 60; break;
+        //    case Difficulty.Difficult: speedMph = 80; break;
+        //    case Difficulty.Lightspeed: speedMph = 100; break;
+        //    case Difficulty.Victory: speedMph = 120; break;
+        //    default: speedMph = 0; break;
+        //}
     }
 
     private void UpdateTargetRotation()

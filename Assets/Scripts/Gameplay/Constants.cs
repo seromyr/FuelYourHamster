@@ -53,6 +53,9 @@ namespace Constants
         // Name of the stat which will be shown in the upgrade UI
         public string name;
 
+        // Description of the upgrade
+        public string description;
+
         // The cost of the next upgrade purchase
         public int cost;
 
@@ -67,17 +70,6 @@ namespace Constants
 
         // The state that this upgrade is available to purchase (player has enough money)
         public bool available;
-    }
-
-    // there will be 5 in-game difficulties, the last one is for victory
-    public enum Difficulty
-    {
-        Kindergarten,
-        Decent,
-        Engaged,
-        Difficult,
-        Lightspeed,
-        Victory
     }
 
     public static class SceneName
@@ -125,11 +117,18 @@ namespace Constants
         public const int DEFAULT_MAX_HEALTH = 2;
         public const int MAX_HEALTH_UPGRADE_VALUE = 1;
 
-        public const int DEFAULT_MAX_CAFFEINE_LEVEL = 100;
+        public const int DEFAULT_MAX_CAFFEINE_LEVEL = 200;
         public const int CAFFEINE_UPGRADE_VALUE = 50;
 
         public const int DEFAULT_CAFFEINE_COSUMING_SPEED = 10;
-        public const float CAFFEINE_COSUMING_SPEED_UPGRADE_VALUE = 0.75f;
+        public const float CAFFEINE_COSUMING_SPEED_UPGRADE_VALUE = 0.25f;
+
+        public const float CHECKPOINT_DURATION = 12f;
+
+        public const float DEFAULT_MAX_SPEED = 50f;
+
+        public const int DEFAULT_HAMSTERBALL_LEVEL = 0;
+        public const int HAMSTERBALL_UPGRADE_VALUE = 1;
     }
 
     public static class TAG

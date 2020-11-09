@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Constants;
 
-public class UI_UpgradeCostMonitoring : MonoBehaviour
+public class UI_UpgradeDesciptionMonitoring : MonoBehaviour
 {
     private int statID;
     private Text textField;
@@ -17,19 +17,12 @@ public class UI_UpgradeCostMonitoring : MonoBehaviour
 
     void Update()
     {
-        if (UpgradeData.main.Stats[statID].cost == -1)
-        {
-            textField.text = "MAX";
-        }
-        else
-        {
-            textField.text = AddSeperatorInLargeNumber(UpgradeData.main.Stats[statID].cost);
-        }
+        textField.text = UpgradeData.main.Stats[statID].description;
     }
 
     private void GetUpgradeStatID()
     {
-        switch (transform.name)
+        switch (transform.parent.name)
         {
             case StatID._01:
                 statID = 0;
@@ -47,11 +40,5 @@ public class UI_UpgradeCostMonitoring : MonoBehaviour
                 statID = 4;
                 break;
         }
-    }
-
-    private string AddSeperatorInLargeNumber(int number)
-    {
-        //Use string format "N" to add comma in large number
-        return string.Format("{0:N0}", number); ;
     }
 }

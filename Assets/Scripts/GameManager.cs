@@ -37,12 +37,15 @@ public class GameManager : MonoBehaviour
         loadDuration = 1f;
 
         firstRun = true;
+
+        // Create Player
+        Player player = new Player();
     }
 
     void Start()
     {
         // Listen to Player events
-        Player.main.OnCollectToken += PlayerCollectedACoin;
+        Player.main.Mechanic.OnCollectToken += PlayerCollectedACoin;
 
         // Initialize money at game start
         moneyTotal = 0;
@@ -116,11 +119,10 @@ public class GameManager : MonoBehaviour
             UI_LoadingScreen.main.SetHint(-1);
         }
 
-
         Player.main.IsKinematic(true);
         Player.main.SetActive(false);
         Player.main.ResetHealth();
-        Player.main.ResetCaffeineLevel();
+        Player.main.FullLoadFuel();
 
         switch (targetGameState)
         {
@@ -238,7 +240,7 @@ public class GameManager : MonoBehaviour
 
     private void CheckPlayerHealth()
     {
-        if (Player.main.CurrentHealth <= 0)
+        if (Player.main.Health <= 0)
         {
             currentGameState = GameState.Lose;
         }

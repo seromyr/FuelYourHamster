@@ -1,0 +1,4 @@
+﻿interface IControlable
+{
+    void Control();
+}

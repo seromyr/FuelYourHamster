@@ -6,8 +6,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // Input Configurations
-    private KeyCode jump, dodgeLeft, dodgeRight;
+    public event EventHandler<KeyInfo> OnChangeLaneKeypressed;
+    public event EventHandler OnJumpKeyPressed;
+
+    public class KeyInfo : EventArgs
+    {
+        public string keyPressed;
+    }
 
     // Jump mechanic
     [SerializeField, Header("Jump Mechanics"), Range(1, 20)]
@@ -20,15 +25,12 @@ public class PlayerController : MonoBehaviour
     public float rb_speed;
 
     [SerializeField]
-    private Side dodgeSide;
-    private Vector3 initLocalPos;
+    private Lane currentLane;
+    private Vector3 defaultPosition;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        jump = KeyCode.Space;
-        dodgeLeft = KeyCode.A;
-        dodgeRight = KeyCode.D;
     }
 
     private void Start()
@@ -38,90 +40,104 @@ public class PlayerController : MonoBehaviour
         fallMultiplier = 7f;
         lowJumpMultiplier = 4f;
 
-        dodgeSide = (Side)UnityEngine.Random.Range(1, 3);
-        initLocalPos = transform.localPosition;
+        //currentLane = (Lane)UnityEngine.Random.Range(1, 3);
+        currentLane = Lane.Middle;
+        defaultPosition = transform.localPosition;
+
+        OnChangeLaneKeypressed += ChangeLane;
+        OnJumpKeyPressed += Jump;
     }
 
     private void FixedUpdate()
     {
-        // Jump!
-        Jump();
-
-        // Dodge!
-        Dodge();
-
+        GameplayInputListener();
+        JumpMechanic();
         rb_speed = rb.velocity.magnitude;
     }
 
-    private bool RequestJump()
+    private void GameplayInputListener()
     {
-        // Only allow jumping when player is grounded
-        // This could cause double jump
-        if (transform.position.y >= 1.4f && transform.position.y <= 1.7f) return Input.GetKey(jump);
-        // Otherwise the key pressed has no effect
-        else return false;
+        if (IsGrounded())
+        {
+            LaneChangeRequest();
+            JumpRequest();
+        }
     }
 
-    private void Jump()
+    private bool IsGrounded()
+    {
+        // Define the condition that player is grounded
+        return transform.position.y >= 1.4f && transform.position.y <= 1.7f;
+    }
+
+    private void JumpRequest()
+    {
+        // Only allow jumping when player is grounded
+        // This could invoke double jump
+        if (Input.GetKey(CONST.JUMP_KEY))
+        {
+            OnJumpKeyPressed?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void LaneChangeRequest()
+    {
+        if (Input.GetKeyDown(CONST.LEFT_KEY) || Input.GetKeyDown(CONST.RIGHT_KEY))
+        {
+            // Pass along the pressed key info
+            OnChangeLaneKeypressed?.Invoke(this, new KeyInfo { keyPressed = Input.inputString });
+        }
+    }
+
+    private void Jump(object sender, EventArgs e)
     {
         // Basic jump
-        if (RequestJump())
-        {
-            rb.velocity = Vector3.up * jumpVelocity;
-        }
+        rb.velocity = Vector3.up * jumpVelocity;
+    }
 
+    private void JumpMechanic()
+    {
         // The longer the jump button is hold the higher jump player makes
         if (rb.velocity.y < 0)
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
 
-        else if (rb.velocity.y > 0 && !Input.GetKey(jump))
+        else if (rb.velocity.y > 0 && !Input.GetKey(CONST.JUMP_KEY))
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
     }
 
-    private bool RequestDodge()
+    private void ChangeLane(object sender, KeyInfo e)
     {
-        if (Input.GetKey(dodgeLeft))
+        switch (e.keyPressed)
         {
-            dodgeSide = Side.Left;
-            return Input.GetKey(dodgeLeft);
-        }
-        else if (Input.GetKey(dodgeRight))
-        {
-            dodgeSide = Side.Right;
-            return Input.GetKey(dodgeRight);
-        }
-        else
-        {
-            return false;
-        }
-    }
+            case CONST.LEFT_KEY_STRING:
+                if (currentLane != Lane.Left) currentLane--;
+                break;
 
-    private void Dodge()
-    {
-        if (RequestDodge())
-        {
-            if (dodgeSide == Side.Left)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, -25);
-                transform.localPosition = new Vector3(initLocalPos.x + 4f, transform.localPosition.y, transform.localPosition.z);
-                Player.main.IsInLaneNumber(3);
-            }
-            else
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 25);
-                transform.localPosition = new Vector3(initLocalPos.x - 4f, transform.localPosition.y, transform.localPosition.z);
-                Player.main.IsInLaneNumber(1);
-            }
+            case CONST.RIGHT_KEY_STRING:
+                if (currentLane != Lane.Right) currentLane++;
+                break;
         }
-        else
+
+        switch (currentLane)
         {
-            transform.rotation = Quaternion.identity;
-            transform.localPosition = new Vector3(initLocalPos.x, transform.localPosition.y, transform.localPosition.z);
-            Player.main.IsInLaneNumber(2);
+            case Lane.Left:
+                transform.localPosition = new Vector3(defaultPosition.x + 4.5f, transform.localPosition.y, transform.localPosition.z);
+                Player.main.IsInLaneNumber(3);
+                break;
+
+            case Lane.Middle:
+                transform.localPosition = new Vector3(defaultPosition.x, transform.localPosition.y, transform.localPosition.z);
+                Player.main.IsInLaneNumber(2);
+                break;
+
+            case Lane.Right:
+                transform.localPosition = new Vector3(defaultPosition.x - 4.5f, transform.localPosition.y, transform.localPosition.z);
+                Player.main.IsInLaneNumber(1);
+                break;
         }
     }
 }

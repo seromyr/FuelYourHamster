@@ -15,7 +15,7 @@ public class UI_EndRunNotice : MonoBehaviour
 
     private void OnEnable()
     {
-        if (Player.main.CurrentHealth <= 0)
+        if (Player.main.Health <= 0)
         {
             message = "Oops! Nibbles is out of Health";
         }

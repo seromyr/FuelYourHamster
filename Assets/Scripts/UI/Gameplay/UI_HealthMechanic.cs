@@ -39,12 +39,12 @@ public class UI_HealthMechanic : MonoBehaviour
         }
 
         // Update current health
-        for (int i = 0; i < Player.main.CurrentHealth; i++)
+        for (int i = 0; i < Player.main.Health; i++)
         {
             healthGraphics[i].sprite = heart_OK;
         }
 
-        for (int i = Player.main.CurrentHealth; i < Player.main.MaxHealth; i++)
+        for (int i = Player.main.Health; i < Player.main.MaxHealth; i++)
         {
             healthGraphics[i].sprite = heart_notOK;
         }

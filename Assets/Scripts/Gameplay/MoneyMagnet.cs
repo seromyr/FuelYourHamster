@@ -20,7 +20,7 @@ public class MoneyMagnet : MonoBehaviour
     {
         Singletonizer();
 
-        transform.position = Player.main.transform.position;
+        transform.position = Player.main.Form.transform.position;
         transform.SetParent(GameManager.main.transform);
 
         coinContainer = new GameObject("TemporaryCoinContainer");
@@ -78,7 +78,7 @@ public class MoneyMagnet : MonoBehaviour
 
     private void FollowPlayer()
     {
-        pos.x = Player.main.transform.position.x;
+        pos.x = Player.main.Form.transform.position.x;
         coinCatcher.transform.position = pos + posOffset;
     }
 
@@ -88,7 +88,7 @@ public class MoneyMagnet : MonoBehaviour
         {
             for (int i = 0; i < coinContainer.transform.childCount; i++)
             {
-                coinContainer.transform.GetChild(i).transform.position = Vector3.MoveTowards(coinContainer.transform.GetChild(i).transform.position, Player.main.transform.position, Time.deltaTime * attractionSpeed);
+                coinContainer.transform.GetChild(i).transform.position = Vector3.MoveTowards(coinContainer.transform.GetChild(i).transform.position, Player.main.Form.transform.position, Time.deltaTime * attractionSpeed);
             }
         }
     }

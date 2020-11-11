@@ -17,10 +17,10 @@ namespace Constants
     }
 
     // Dodge mechanic
-    public enum Side
+    public enum Lane
     {
-        None,
         Left,
+        Middle,
         Right,
     }
 
@@ -94,7 +94,7 @@ namespace Constants
 
     public static class Prefab
     {
-        public const string COIN = "Coin";
+        public const string COIN    = "Coin";
         public const string MUTATED = "MutatedObject";
         public const string EXTREME = "ExtremeObject";
     }
@@ -110,33 +110,48 @@ namespace Constants
 
     public static class CONST
     {
-        public const int VAULT_01_CAPACITY = 5;
-        public const int VAULT_02_CAPACITY = 9;
-        public const int VAULT_03_CAPACITY = 7;
+        // Factory performance
+        public const int VAULT_01_CAPACITY                          = 5;
+        public const int VAULT_02_CAPACITY                          = 9;
+        public const int VAULT_03_CAPACITY                          = 7;
 
-        public const int DEFAULT_MAX_HEALTH = 2;
-        public const int MAX_HEALTH_UPGRADE_VALUE = 1;
+        // Upgrade values
+        public const int DEFAULT_MAX_HEALTH                         = 2;
+        public const int MAX_HEALTH_UPGRADE_VALUE                   = 1;
 
-        public const int DEFAULT_MAX_CAFFEINE_LEVEL = 200;
-        public const int CAFFEINE_UPGRADE_VALUE = 50;
+        public const int DEFAULT_MAX_CAFFEINE_LEVEL                 = 200;
+        public const int CAFFEINE_UPGRADE_VALUE                     = 50;
 
-        public const int DEFAULT_CAFFEINE_COSUMING_SPEED = 10;
-        public const float CAFFEINE_COSUMING_SPEED_UPGRADE_VALUE = 0.25f;
+        public const int DEFAULT_CAFFEINE_COSUMING_SPEED            = 10;
+        public const float CAFFEINE_COSUMING_SPEED_UPGRADE_VALUE    = 0.25f;
 
-        public const float CHECKPOINT_DURATION = 12f;
+        public const float CHECKPOINT_DURATION                      = 12f;
 
-        public const float DEFAULT_MAX_SPEED = 50f;
+        public const float DEFAULT_MAX_SPEED                        = 50f;
 
-        public const int DEFAULT_HAMSTERBALL_LEVEL = 0;
-        public const int HAMSTERBALL_UPGRADE_VALUE = 1;
+        public const int DEFAULT_HAMSTERBALL_LEVEL                  = 0;
+        public const int HAMSTERBALL_UPGRADE_VALUE                  = 1;
+
+        // Key code
+        public const KeyCode JUMP_KEY = KeyCode.Space;
+        public const KeyCode LEFT_KEY = KeyCode.A;
+        public const KeyCode RIGHT_KEY = KeyCode.D;
+        public const string LEFT_KEY_STRING = "a";
+        public const string RIGHT_KEY_STRING = "d";
+
+        // Player default position
+        public static readonly Vector3 PLAYER_DEFAULT_POSITION = new Vector3(-9, 1.5f, 0);
+        public static readonly Vector3 PLAYER_DEFAULT_AVATAR_POSITION = new Vector3(0, 0.6f, 0);
+        public static readonly Vector3 PLAYER_DEFAULT_AVATAR_SIZE = Vector3.one * 0.7f;
+        public static readonly Quaternion PLAYER_DEFAULT_AVATAR_ROTATION = Quaternion.Euler(0, 180, -8.463f);
     }
 
     public static class TAG
     {
-        public const string SPAWNCOLLIDER = "SpawnCollider";
-        public const string COIN = "Coin";
-        public const string OBJGOOD = "GoodCollectible";
-        public const string OBJBAD = "BadCollectible";
+        public const string SPAWNCOLLIDER    = "SpawnCollider";
+        public const string COIN             = "Coin";
+        public const string OBJGOOD          = "GoodCollectible";
+        public const string OBJBAD           = "BadCollectible";
     }
 
     public static class AudioComponent

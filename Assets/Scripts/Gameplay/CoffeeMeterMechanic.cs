@@ -51,7 +51,7 @@ public class CoffeeMeterMechanic : MonoBehaviour
         currentCaffeineLevel = Player.main.CaffeineCurrentLevel;
         SetCaffeineLevel(currentCaffeineLevel);
 
-        if (Player.main.RequestCoffee) PourCoffee();
+        if (Player.main.Mechanic.RequestCoffee) PourCoffee();
 
         if (isPouringCoffee) CoffeeFlow(200);
 

@@ -17,13 +17,6 @@ public class GameManager : MonoBehaviour
     private bool gameStateUpdating, firstRun;
     private float loadDuration;
 
-    //private GameObject speedometer;
-
-    [SerializeField, Header("Current amount of money")]
-    private int moneyTotal;
-    private int moneyCurrent;
-    public int CheckWallet { get { return moneyTotal; } }
-
     private CoffeeMeterMechanic coffee_O_Meter;
 
     private void Awake()
@@ -44,13 +37,11 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Listen to Player events
-        Player.main.Mechanic.OnCollectToken += PlayerCollectedACoin;
-
         // Initialize money at game start
-        moneyTotal = 0;
+        Player.main.SetFund(CONST.PLAYER_DEFAUL_MONEY);
 
-        targetGameState = GameState.Start;
+        //targetGameState = GameState.Start;
+        targetGameState = GameState.New;
         gameStateUpdating = true;
         LoadRoutine();
     }
@@ -121,8 +112,9 @@ public class GameManager : MonoBehaviour
 
         Player.main.IsKinematic(true);
         Player.main.SetActive(false);
-        Player.main.ResetHealth();
-        Player.main.FullLoadFuel();
+
+        QuestController.main.ActivateQuest(QuestController.main.CurrentActiveQuestID);
+        QuestController.main.TrackingQuest(true);
 
         switch (targetGameState)
         {
@@ -132,6 +124,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.New:
                 StartCoroutine(LoadSceneWithDelay(SceneName.GAME, loadDuration));
+                Debug.LogError("New Run");
                 UI_LoadingScreen.main.SetHint(1);
                 break;
         }
@@ -161,7 +154,9 @@ public class GameManager : MonoBehaviour
         Player.main.SetActive(true);
         Player.main.IsKinematic(false);
         Player.main.AssignVault();
-        //Player.main.ResetHamsterBall();
+        Player.main.ResetIncome();
+        Player.main.FullLoadHealth();
+        Player.main.FullLoadFuel();
 
         // Gameplay UI setup
         UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
@@ -176,8 +171,12 @@ public class GameManager : MonoBehaviour
         DiffilcultyController.main.MarkBeginTime();
         DiffilcultyController.main.MarkTime();
         DiffilcultyController.main.SetCheckPointTime(CONST.CHECKPOINT_DURATION);
+        DiffilcultyController.main.ResetSpawningRange();
 
-        moneyCurrent = 0;
+        // Main Quest setup
+        QuestController.main.AssignCollectibleContainer();
+        QuestController.main.LoadNextQuestCollectible();
+        QuestController.main.ClearCollectedCharacters();
 
         gameStateUpdating = false;
     }
@@ -186,13 +185,12 @@ public class GameManager : MonoBehaviour
     {
         gameStateUpdating = true;
 
-        if (DiffilcultyController.main.VictoryConditionMet)
+        if (QuestController.main.IsCurrentQuestFinished())
         {
             currentGameState = GameState.Win;
+            QuestController.main.AdvanceToNextQuest();
         }
 
-        DiffilcultyController.main.RegulateDifficulty();
-        //CheckDistance();
         CheckUpgradeAvailability();
         CheckPlayerHealth();
         CheckPlayerCaffeineLevel();
@@ -203,13 +201,9 @@ public class GameManager : MonoBehaviour
         UI_UpgradeMenu.main.SetCanvasAtive(true);
     }
 
-    private void ShowHowToPlay(bool value)
-    {
-
-    }
-
     private void ShowSummary()
     {
+        Player.main.ControlPermission(false);
         gameStateUpdating = false;
         StartCoroutine(EndRunSequence());
 
@@ -221,7 +215,15 @@ public class GameManager : MonoBehaviour
     {
         gameStateUpdating = false;
         UI_VictoryScreen.main.SetCanvasAtive(true);
-
+        UI_VictoryScreen.main.SetSummaryText
+            (
+                  "Run duration: " + DiffilcultyController.main.RunTime
+                + "\nMax speed: " + DiffilcultyController.main.MaxSpeed + " km/h"
+                + "\nCoins collected: " + Player.main.Income
+                + "\nCharacter Collected: " + QuestController.main.CharacterCollected
+                + "\nBonus reward: 200 coins"
+            );
+        Player.main.AddFundToWallet(200);
         // Mark the end time of the run
         DiffilcultyController.main.MarkEndTime();
     }
@@ -230,7 +232,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < UpgradeData.main.Stats.Length; i++)
         {
-            if (moneyTotal < UpgradeData.main.Stats[i].cost)
+            if (Player.main.Wallet < UpgradeData.main.Stats[i].cost)
             {
                 UpgradeData.main.Stats[i].available = false;
             }
@@ -279,19 +281,13 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(3);
         // Show lose game screen
         UI_RunResultScreen.main.SetCanvasAtive(true);
-        UI_RunResultScreen.main.SetSummaryText("Run duration: " + DiffilcultyController.main.RunTime + " " + "\nMax speed: " + DiffilcultyController.main.MaxSpeed + " km/h" + "\nCoins collected: " + moneyCurrent);
-    }
-
-    private void PlayerCollectedACoin(object sender, EventArgs e)
-    {
-        // A coin equals a unit of money
-        AddMoney(1);
-        moneyCurrent++;
-    }
-
-    public void AddMoney(int amount)
-    {
-        moneyTotal += amount;
+        UI_RunResultScreen.main.SetSummaryText
+            (
+                  "Run duration: "          + DiffilcultyController.main.RunTime
+                + "\nMax speed: "     + DiffilcultyController.main.MaxSpeed + " km/h"
+                + "\nCoins collected: "     + Player.main.Income
+                + "\nCharacter Collected: " + QuestController.main.CharacterCollected
+            );
     }
 
     public void PurchaseUpgrade(int statID)
@@ -300,7 +296,7 @@ public class GameManager : MonoBehaviour
         if (AllowUpgradePurchasing(statID))
         {
             // Purchase & deduct money
-            AddMoney(-UpgradeData.main.PurchaseUpgrade(statID));
+            Player.main.AddFundToWallet(-UpgradeData.main.PurchaseUpgrade(statID));
 
             // Update upgrade stat
             UpgradeData.main.UpdateStat(statID);
@@ -312,7 +308,7 @@ public class GameManager : MonoBehaviour
 
     public bool AllowUpgradePurchasing(int statID)
     {
-        return UpgradeData.main.CheckUpgradeAvailability(statID) && moneyTotal >= UpgradeData.main.Stats[statID].cost;
+        return UpgradeData.main.CheckUpgradeAvailability(statID) && Player.main.Wallet >= UpgradeData.main.Stats[statID].cost;
     }
 
     private void UpgadeGameplayStats(int statID)
@@ -344,6 +340,11 @@ public class GameManager : MonoBehaviour
     // PUBLIC METHODS
     public void GoToTheMainMenu()
     {
+    }
+
+    public void ShowHowToPlay()
+    {
+        UI_MainMenu.main.SetHowToPlayActive(true);
     }
 
     public void NewGame()

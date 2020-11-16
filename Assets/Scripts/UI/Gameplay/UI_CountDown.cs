@@ -27,7 +27,8 @@ public class UI_CountDown : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         countDownText.text = "GO";
         yield return new WaitForSeconds(0.5f);
-        Player.main.IsConsumingFuel = true;
+        Player.main.IsConsumingFuel(true);
+        Player.main.ControlPermission(true);
         gameObject.SetActive(false);
     }
 }

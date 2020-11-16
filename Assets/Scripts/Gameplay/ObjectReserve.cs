@@ -6,6 +6,13 @@ using UnityEngine;
 
 public class ObjectReserve : MonoBehaviour
 {
+    private Empty empty;
+    private Coin coin;
+    private CoffeeBean coffeeBean;
+    private MutatedCollectible collectible;
+    private ExtremeMutatedCollectible collectibleEx;
+    private Quest questCollectible;
+
     [Serializable]
     public struct Vault
     {
@@ -15,9 +22,7 @@ public class ObjectReserve : MonoBehaviour
         public string name;
     }
 
-
     private MutationPool mutationPool;
-    private GameObject obj_Mutated, obj_coin, obj_Extreme;
 
     [SerializeField]
     private Vault vault01, vault02, vault03;
@@ -30,16 +35,21 @@ public class ObjectReserve : MonoBehaviour
 
     private void Awake()
     {
-        obj_coin = Resources.Load<GameObject>(Prefab.COIN);
-        obj_Mutated = Resources.Load<GameObject>(Prefab.MUTATED);
-        obj_Extreme = Resources.Load<GameObject>(Prefab.EXTREME);
-        mutationPool = GameObject.Find(PrimeObj.MUTATIONPOOL).GetComponent<MutationPool>();
+        // Create collectible blueprints
+        empty            = new Empty();
+        coin             = new Coin();
+        coffeeBean       = new CoffeeBean();
+        collectible      = new MutatedCollectible();
+        collectibleEx    = new ExtremeMutatedCollectible();
+        questCollectible = new Quest();
+
+        mutationPool     = GameObject.Find(PrimeObj.MUTATIONPOOL).GetComponent<MutationPool>();
+                         
+        randomize        = GetComponent<Randomize>();
 
         VaultSetup(PrimeObj.VAULT01, CONST.VAULT_01_CAPACITY, out vault01);
         VaultSetup(PrimeObj.VAULT02, CONST.VAULT_02_CAPACITY, out vault02);
         VaultSetup(PrimeObj.VAULT03, CONST.VAULT_03_CAPACITY, out vault03);
-
-        randomize = GetComponent<Randomize>();
     }
 
     private void VaultSetup(string name, int capacity, out Vault vault)
@@ -49,12 +59,13 @@ public class ObjectReserve : MonoBehaviour
             name = name,
             capacity = capacity,
         };
+
         vault.objPool = new GameObject[vault.capacity];
         vault.isInVault = new bool[vault.capacity];
 
         for (int i = 0; i < vault.capacity; i++)
         {
-            vault.objPool[i] = obj_coin;
+            //vault.objPool[i] = coin.Form;
             vault.isInVault[i] = true;
         }
     }
@@ -69,54 +80,88 @@ public class ObjectReserve : MonoBehaviour
     private void MutationOccurence(Vault theVault)
     {
         // Mutation only happens when a coin is inside pool 
+        // Occurance range example:
+        // 0---------------------------------------------------1000
+        // 0----100                                                  : CoffeeBean 
+        //       101----------------800                              : Coin
+        //                           801-------950                   : Bad Mutation
+        //                                      951---975            : Good Mutation
+        //                                              976-----1000 : Extremely Bad Mutation
+
         for (int i = 0; i < theVault.isInVault.Length; i++)
         {
-            if (theVault.isInVault[i] && theVault.objPool[i] == obj_coin)
-            {
-                var mutationChance = UnityEngine.Random.Range(0, 1001);
+            int spawnChance = RollADice(DiffilcultyController.main.emptyScaling.startRange, DiffilcultyController.main.questScaling.endRange);
 
-                // Each mutation has % of occurence
-                if (mutationChance >= 950 && mutationChance <= 990)
+            // Empty Object Spawning
+            if      (IsBetweenTwoNumber(spawnChance, DiffilcultyController.main.emptyScaling.startRange, DiffilcultyController.main.emptyScaling.endRange))
+            {
+                theVault.objPool[i] = empty.Form;
+            }
+
+            // Coin Spawning
+            else if (IsBetweenTwoNumber(spawnChance, DiffilcultyController.main.coinScaling.startRange, DiffilcultyController.main.coinScaling.endRange))
+            {
+                theVault.objPool[i] = coin.Form;
+            }
+
+            // Coffee Bean Spawning
+            else if (IsBetweenTwoNumber(spawnChance, DiffilcultyController.main.beanScaling.startRange, DiffilcultyController.main.beanScaling.endRange))
+            {
+                theVault.objPool[i] = coffeeBean.Form;
+                theVault.objPool[i].GetComponent<MutatationMechanic>().ChangeMutationType(Constants.CollectibleType.Bean);
+            }
+
+            // Good Object Spawning
+            else if (IsBetweenTwoNumber(spawnChance, DiffilcultyController.main.goodMutationScaling.startRange, DiffilcultyController.main.goodMutationScaling.endRange))
+            {
+                theVault.objPool[i] = collectible.Form;
+                theVault.objPool[i].TryGetComponent<MutationAppearance>(out var skin);
+                if (skin != null)
                 {
-                    theVault.objPool[i] = obj_Mutated;
-                    theVault.objPool[i].TryGetComponent<MutationAppearance>(out var skin);
-                    if (skin != null)
-                    {
-                        var mutationType = UnityEngine.Random.Range(0, 6);
-                        if (mutationType < 1)
-                        {
-                            skin.Skin = randomize.RandomizeMe(mutationPool.Beneficials);
-                            theVault.objPool[i].tag = TAG.OBJGOOD;
-                        }
-                        else
-                        {
-                            skin.Skin = randomize.RandomizeMe(mutationPool.Harmfuls);
-                            theVault.objPool[i].tag = TAG.OBJBAD;
-                        }
-                    }
-                }
-                // Extreme mutation chance
-                else if (mutationChance >= 991)
-                {
-                    theVault.objPool[i] = obj_Extreme;
-                    theVault.objPool[i].TryGetComponent<MutationAppearance>(out var skin);
-                    if (skin != null)
-                    {
-                        skin.Skin = randomize.RandomizeMe(mutationPool.Extremes);
-                        theVault.objPool[i].tag = TAG.OBJBAD;
-                    }
+                    skin.Skin = randomize.RandomizeMe(mutationPool.Beneficials);
+                    theVault.objPool[i].GetComponent<MutatationMechanic>().ChangeMutationType(Constants.CollectibleType.Good);
                 }
             }
-            else if (theVault.isInVault[i] && theVault.objPool[i] != obj_coin)
-            {
-                var deMutationChance = UnityEngine.Random.Range(0, 1001);
 
-                // Each de-mutation has % of occurence
-                if (deMutationChance >= 400)
+            // Bad Object Spawning
+            else if (IsBetweenTwoNumber(spawnChance, DiffilcultyController.main.badMutationScaling.startRange, DiffilcultyController.main.badMutationScaling.endRange))
+            {
+                theVault.objPool[i] = collectible.Form;
+                theVault.objPool[i].TryGetComponent<MutationAppearance>(out var skin);
+                if (skin != null)
                 {
-                    theVault.objPool[i] = obj_coin;
+                    skin.Skin = randomize.RandomizeMe(mutationPool.Harmfuls);
+                    theVault.objPool[i].GetComponent<MutatationMechanic>().ChangeMutationType(Constants.CollectibleType.Bad);
                 }
+            }
+
+            // Extremely Bad Spawning
+            else if (IsBetweenTwoNumber(spawnChance, DiffilcultyController.main.exBadMutationScaling.startRange, DiffilcultyController.main.exBadMutationScaling.endRange))
+            {
+                theVault.objPool[i] = collectibleEx.Form;
+                theVault.objPool[i].TryGetComponent<MutationAppearance>(out var skin);
+                if (skin != null)
+                {
+                    skin.Skin = randomize.RandomizeMe(mutationPool.Extremes);
+                    theVault.objPool[i].GetComponent<MutatationMechanic>().ChangeMutationType(Constants.CollectibleType.VeryBad);
+                }
+            }
+
+            // Quest Object Spawning
+            else if (IsBetweenTwoNumber(spawnChance, DiffilcultyController.main.questScaling.startRange, DiffilcultyController.main.questScaling.endRange))
+            {
+                //  nothing for now
             }
         }
+    }
+
+    public int RollADice(int fromNumber, int toNumber)
+    {
+        return UnityEngine.Random.Range(fromNumber, toNumber + 1);
+    }
+
+    public bool IsBetweenTwoNumber(int evaluatingNumber, int min, int max)
+    {
+        return evaluatingNumber >= min && evaluatingNumber <= max;
     }
 }

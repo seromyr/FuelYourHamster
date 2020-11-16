@@ -22,11 +22,18 @@ public class UI_MainMenu : MonoBehaviour
     [SerializeField, Header("Type of fade")]
     private FadeType fadeType;
 
+    private GameObject playButton, creditButton, copyright, howToPlay;
+
     private void Awake()
     {
         Singletionizer();
         mainMenuGroup = gameObject.AddComponent<CanvasGroup>();
         TryGetComponent(out canvas);
+
+        howToPlay = transform.Find("HowToPlay").gameObject;
+        playButton = transform.Find("PlayButton").gameObject;
+        creditButton = transform.Find("CreditButton").gameObject;
+        copyright = transform.Find("Copyright").gameObject;
     }
 
     void Start()
@@ -43,6 +50,8 @@ public class UI_MainMenu : MonoBehaviour
             // Record time
             time = Time.time;
         }
+
+        howToPlay.SetActive(false);
     }
 
     private void Singletionizer()
@@ -97,5 +106,13 @@ public class UI_MainMenu : MonoBehaviour
     public void SetCanvasActive(bool value)
     {
         canvas.enabled = value;
+    }
+
+    public void SetHowToPlayActive(bool value)
+    {
+        howToPlay.SetActive(value);
+        creditButton.SetActive(!value);
+        playButton.SetActive(!value);
+        copyright.SetActive(!value);
     }
 }

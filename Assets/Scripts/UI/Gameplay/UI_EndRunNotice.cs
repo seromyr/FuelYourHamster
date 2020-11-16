@@ -30,7 +30,7 @@ public class UI_EndRunNotice : MonoBehaviour
 
     private IEnumerator CoutDownSequence(string message)
     {
-        Player.main.IsConsumingFuel = false;
+        Player.main.IsConsumingFuel(false);
         countDownText.text = message;
         yield return new WaitForSeconds(3f);
         countDownText.text = " ";

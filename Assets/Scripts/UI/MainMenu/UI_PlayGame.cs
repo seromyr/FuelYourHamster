@@ -18,7 +18,8 @@ public class UI_PlayGame : MonoBehaviour
     }
     public void NewGame()
     {
-        GameManager.main.NewGame();
+        //GameManager.main.NewGame();
+        GameManager.main.ShowHowToPlay();
         PlaySound();
     }
 

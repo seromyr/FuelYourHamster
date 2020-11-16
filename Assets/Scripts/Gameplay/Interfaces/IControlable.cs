@@ -1,4 +1,5 @@
 ﻿interface IControlable
 {
-    void Control();
+    void ControllerSetup();
+    void ControlPermission(bool value);
 }

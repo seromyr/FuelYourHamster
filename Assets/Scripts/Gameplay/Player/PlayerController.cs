@@ -21,17 +21,11 @@ public class PlayerController : MonoBehaviour
     private float fallMultiplier;
     [SerializeField]
     private float lowJumpMultiplier;
-    private Rigidbody rb;
     public float rb_speed;
 
     [SerializeField]
     private Lane currentLane;
     private Vector3 defaultPosition;
-
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
 
     private void Start()
     {
@@ -40,7 +34,6 @@ public class PlayerController : MonoBehaviour
         fallMultiplier = 7f;
         lowJumpMultiplier = 4f;
 
-        //currentLane = (Lane)UnityEngine.Random.Range(1, 3);
         currentLane = Lane.Middle;
         defaultPosition = transform.localPosition;
 
@@ -52,16 +45,17 @@ public class PlayerController : MonoBehaviour
     {
         GameplayInputListener();
         JumpMechanic();
-        rb_speed = rb.velocity.magnitude;
+        rb_speed = Player.main.RigidBody.velocity.magnitude;
     }
 
     private void GameplayInputListener()
     {
         if (IsGrounded())
         {
-            LaneChangeRequest();
             JumpRequest();
         }
+
+        LaneChangeRequest();
     }
 
     private bool IsGrounded()
@@ -74,7 +68,7 @@ public class PlayerController : MonoBehaviour
     {
         // Only allow jumping when player is grounded
         // This could invoke double jump
-        if (Input.GetKey(CONST.JUMP_KEY))
+        if (Input.GetKey(CONST.JUMP_KEY) && Player.main.AllowPlayerControl)
         {
             OnJumpKeyPressed?.Invoke(this, EventArgs.Empty);
         }
@@ -82,7 +76,7 @@ public class PlayerController : MonoBehaviour
 
     private void LaneChangeRequest()
     {
-        if (Input.GetKeyDown(CONST.LEFT_KEY) || Input.GetKeyDown(CONST.RIGHT_KEY))
+        if ((Input.GetKeyDown(CONST.LEFT_KEY) || Input.GetKeyDown(CONST.RIGHT_KEY)) & Player.main.AllowPlayerControl)
         {
             // Pass along the pressed key info
             OnChangeLaneKeypressed?.Invoke(this, new KeyInfo { keyPressed = Input.inputString });
@@ -92,20 +86,20 @@ public class PlayerController : MonoBehaviour
     private void Jump(object sender, EventArgs e)
     {
         // Basic jump
-        rb.velocity = Vector3.up * jumpVelocity;
+        Player.main.RigidBody.velocity = Vector3.up * jumpVelocity;
     }
 
     private void JumpMechanic()
     {
         // The longer the jump button is hold the higher jump player makes
-        if (rb.velocity.y < 0)
+        if (Player.main.RigidBody.velocity.y < 0)
         {
-            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+            Player.main.RigidBody.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
 
-        else if (rb.velocity.y > 0 && !Input.GetKey(CONST.JUMP_KEY))
+        else if (Player.main.RigidBody.velocity.y > 0 && !Input.GetKey(CONST.JUMP_KEY))
         {
-            rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+            Player.main.RigidBody.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
     }
 

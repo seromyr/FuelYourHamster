@@ -28,7 +28,7 @@ public class ObjectRecycler : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(TAG.COIN) || other.CompareTag(TAG.OBJGOOD) || other.CompareTag(TAG.OBJBAD))
+        if (other.CompareTag(TAG.COLLECTIBLE) || other.CompareTag(TAG.OBJGOOD) || other.CompareTag(TAG.OBJBAD))
         {
             Destroy(other.gameObject);
             // Coin pooling on factory side

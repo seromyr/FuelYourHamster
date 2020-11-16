@@ -15,7 +15,7 @@ public class UI_WalletMonitoring : MonoBehaviour
     void Update()
     {
         //Always display the current number of money that player has in the text field
-        textField.text = AddSeperatorInLargeNumber(GameManager.main.CheckWallet);
+        textField.text = AddSeperatorInLargeNumber(Player.main.Wallet);
     }
 
     private string AddSeperatorInLargeNumber(int number)

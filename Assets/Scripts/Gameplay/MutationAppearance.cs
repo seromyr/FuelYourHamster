@@ -6,5 +6,5 @@ public class MutationAppearance : MonoBehaviour
 {
     private Sprite skin;
 
-    public Sprite Skin { set { transform.Find("Mesh").GetComponent<SpriteRenderer>().sprite = value; } }
+    public Sprite Skin { set { transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = value; } }
 }

@@ -25,6 +25,7 @@ public abstract class Entity
     public string               Name        { get { return _name; } }
     public GameObject           Form        { get { return _body; } }
     public GameObject           Avatar      { get { return _avatar; } }
+    public Rigidbody            RigidBody   { get { return _rigidbody; } }
 
     // Abstract Methods
     protected abstract void CreateBody();

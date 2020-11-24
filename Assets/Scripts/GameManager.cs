@@ -19,32 +19,31 @@ public class GameManager : MonoBehaviour
 
     private CoffeeMeterMechanic coffee_O_Meter;
 
+    private string summaryText;
+
     private void Awake()
     {
         // Make the Game Manager become a Singleton
         Singletonize();
 
-        // Setup before loading the Main Menu
-        PreloadSetup();
-
-        loadDuration = 1f;
-
-        firstRun = true;
+        // Setup before opening the Main Menu
+        GameInitialization();
 
         // Create Player
         Player player = new Player();
     }
 
-    void Start()
+    private void Start()
     {
         // Initialize money at game start
-        Player.main.SetFund(CONST.PLAYER_DEFAUL_MONEY);
+        Player.main.SetFund(CONST.PLAYER_DEFAULT_MONEY);
 
-        //targetGameState = GameState.Start;
-        targetGameState = GameState.New;
+        targetGameState = GameState.Start;
+        //targetGameState = GameState.New;
         gameStateUpdating = true;
         LoadRoutine();
     }
+
     private void Singletonize()
     {
         if (main == null)
@@ -59,7 +58,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void PreloadSetup()
+    private void GameInitialization()
     {
         // Add event system for UI
         gameObject.AddComponent<EventSystem>();
@@ -68,6 +67,10 @@ public class GameManager : MonoBehaviour
         UI_UpgradeMenu.main.SetCanvasAtive(false);
         UI_RunResultScreen.main.SetCanvasAtive(false);
         UI_VictoryScreen.main.SetCanvasAtive(false);
+
+        loadDuration = 1f;
+
+        firstRun = true;
     }
 
     private void Update()
@@ -113,6 +116,7 @@ public class GameManager : MonoBehaviour
         Player.main.IsKinematic(true);
         Player.main.SetActive(false);
 
+        QuestController.main.SetupQuest(QuestController.main.CurrentActiveQuestID);
         QuestController.main.ActivateQuest(QuestController.main.CurrentActiveQuestID);
         QuestController.main.TrackingQuest(true);
 
@@ -124,7 +128,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.New:
                 StartCoroutine(LoadSceneWithDelay(SceneName.GAME, loadDuration));
-                Debug.LogError("New Run");
+                Debug.Log("New Run");
                 UI_LoadingScreen.main.SetHint(1);
                 break;
         }
@@ -158,25 +162,35 @@ public class GameManager : MonoBehaviour
         Player.main.FullLoadHealth();
         Player.main.FullLoadFuel();
 
-        // Gameplay UI setup
-        UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
-        UI_Gameplay_Mechanic.main.SetCanvasActive(true);
-        UI_Gameplay_Mechanic.main.StartCountDown();
-        UI_UpgradeMenu.main.SetCanvasAtive(false);
-        UI_RunResultScreen.main.SetCanvasAtive(false);
-        UI_VictoryScreen.main.SetCanvasAtive(false);
-
         // Difficulty setup
         DiffilcultyController.main.AssignWheel();
-        DiffilcultyController.main.MarkBeginTime();
+        //DiffilcultyController.main.MarkBeginTime();
         DiffilcultyController.main.MarkTime();
         DiffilcultyController.main.SetCheckPointTime(CONST.CHECKPOINT_DURATION);
         DiffilcultyController.main.ResetSpawningRange();
 
         // Main Quest setup
+        QuestController.main.SetupQuest(QuestController.main.CurrentActiveQuestID);
         QuestController.main.AssignCollectibleContainer();
         QuestController.main.LoadNextQuestCollectible();
         QuestController.main.ClearCollectedCharacters();
+
+        // Gameplay UI setup
+        UI_Gameplay_Mechanic.main.transform.Find("Coffee-O-Meter").TryGetComponent(out coffee_O_Meter);
+        UI_Gameplay_Mechanic.main.SetCanvasActive(true);
+        UI_Gameplay_Mechanic.main.StartCountDown();
+        UI_Gameplay_Mechanic.main.DisplayActiveQuest();
+        UI_UpgradeMenu.main.SetCanvasAtive(false);
+        UI_RunResultScreen.main.SetCanvasAtive(false);
+        UI_VictoryScreen.main.SetCanvasAtive(false);
+
+        // Create summary text;
+        summaryText =
+            (
+                  "Run duration: "          + DiffilcultyController.main.RunTime
+                + "\nMax speed: "           + DiffilcultyController.main.MaxSpeed + " km/h"
+                + "\nCoins collected: "     + Player.main.Income
+            );
 
         gameStateUpdating = false;
     }
@@ -204,6 +218,7 @@ public class GameManager : MonoBehaviour
     private void ShowSummary()
     {
         Player.main.ControlPermission(false);
+        Player.main.IsConsumingFuel(false);
         gameStateUpdating = false;
         StartCoroutine(EndRunSequence());
 
@@ -213,17 +228,13 @@ public class GameManager : MonoBehaviour
 
     private void ShowVictory()
     {
+        Player.main.ControlPermission(false);
+        Player.main.IsConsumingFuel(false);
         gameStateUpdating = false;
         UI_VictoryScreen.main.SetCanvasAtive(true);
-        UI_VictoryScreen.main.SetSummaryText
-            (
-                  "Run duration: " + DiffilcultyController.main.RunTime
-                + "\nMax speed: " + DiffilcultyController.main.MaxSpeed + " km/h"
-                + "\nCoins collected: " + Player.main.Income
-                + "\nCharacter Collected: " + QuestController.main.CharacterCollected
-                + "\nBonus reward: 200 coins"
-            );
-        Player.main.AddFundToWallet(200);
+        UI_VictoryScreen.main.SetSummaryText(summaryText + "\nBonus Reward: " + CONST.PLAYER_BONUS_MONEY + "coins");
+        Player.main.AddFundToWallet(CONST.PLAYER_BONUS_MONEY);
+
         // Mark the end time of the run
         DiffilcultyController.main.MarkEndTime();
     }
@@ -279,15 +290,10 @@ public class GameManager : MonoBehaviour
     {
         UI_Gameplay_Mechanic.main.ShowEndRunNotice();
         yield return new WaitForSeconds(3);
+
         // Show lose game screen
         UI_RunResultScreen.main.SetCanvasAtive(true);
-        UI_RunResultScreen.main.SetSummaryText
-            (
-                  "Run duration: "          + DiffilcultyController.main.RunTime
-                + "\nMax speed: "     + DiffilcultyController.main.MaxSpeed + " km/h"
-                + "\nCoins collected: "     + Player.main.Income
-                + "\nCharacter Collected: " + QuestController.main.CharacterCollected
-            );
+        UI_RunResultScreen.main.SetSummaryText(summaryText + "\nCharacter Collected: " + QuestController.main.CharacterCollected);
     }
 
     public void PurchaseUpgrade(int statID)

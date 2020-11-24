@@ -69,10 +69,10 @@ public class MoneyMagnet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(TAG.COIN))
+        if (other.name == "Coin(Clone)")
         {
             other.transform.SetParent(coinContainer.transform);
-            Debug.Log(other.name);
+            //Debug.Log(other.name);
         }
     }
 

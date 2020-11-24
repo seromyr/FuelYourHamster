@@ -12,12 +12,16 @@ public class QuestController : MonoBehaviour
 
     private float _beginQuestCheck, _durationQuestCheck;
 
-    public List<Sprite> questCharacters, quest1, quest2, quest3, quest4, quest5;
+    public List<Sprite> questCharacters, currentQuestSprite;
+    public List<Sprite> CurrentQuestSprite { get { return currentQuestSprite; } }
+
+    private string[] _questText;
+    public string[] QuestText { get { return _questText; } }
 
     private int currentQuestID, currentQuestProgress;
     public int CurrentActiveQuestID { get { return currentQuestID; } }
 
-    public Queue<Sprite> currentQuest;
+    private Queue<Sprite> currentQuest;
 
     private bool isChecking;
 
@@ -31,18 +35,21 @@ public class QuestController : MonoBehaviour
         questCharacters = new List<Sprite>();
         questCharacters.AddRange(Resources.LoadAll<Sprite>("Collectable Sprites/Quest"));
 
-        currentQuestID = 1;
+        currentQuestID = 0;
         currentQuest = new Queue<Sprite>();
         isChecking = false;
     }
 
     private void Start()
     {
-        QuestSetup("FYH"               , out quest1);
-        QuestSetup("Buu"               , out quest2);
-        QuestSetup("Josh"              , out quest3);
-        QuestSetup("Nibbles"           , out quest4);
-        QuestSetup("Fuel Your Hamster" , out quest5);
+        _questText = new string[]
+        {
+            "FYH",
+            "Buu",
+            "Josh",
+            "Nibbles",
+            "Fuel Your Hamster"
+        };
     }
 
     private void Singletonize()
@@ -93,6 +100,11 @@ public class QuestController : MonoBehaviour
         }
     }
 
+    public void SetupQuest(int id)
+    {
+        QuestSetup(_questText[id], out currentQuestSprite);
+    }
+
     private void QuestSetup(string input, out List<Sprite> quest)
     {
         quest = new List<Sprite>();
@@ -112,43 +124,11 @@ public class QuestController : MonoBehaviour
     public void ActivateQuest(int questID)
     {
         currentQuest.Clear();
+        //currentQuestSprite
 
-        switch (questID)
+        for (int i = 0; i < currentQuestSprite.Count; i++)
         {
-            case 1:
-                for (int i = 0; i < quest1.Count; i++)
-                {
-                    currentQuest.Enqueue(quest1[i]);
-                }
-                break;
-
-            case 2:
-                for (int i = 0; i < quest2.Count; i++)
-                {
-                    currentQuest.Enqueue(quest2[i]);
-                }
-                break;
-
-            case 3:
-                for (int i = 0; i < quest3.Count; i++)
-                {
-                    currentQuest.Enqueue(quest3[i]);
-                }
-                break;
-
-            case 4:
-                for (int i = 0; i < quest4.Count; i++)
-                {
-                    currentQuest.Enqueue(quest4[i]);
-                }
-                break;
-
-            case 5:
-                for (int i = 0; i < quest5.Count; i++)
-                {
-                    currentQuest.Enqueue(quest5[i]);
-                }
-                break;
+            currentQuest.Enqueue(currentQuestSprite[i]);
         }
 
         currentQuestProgress = currentQuest.Count;

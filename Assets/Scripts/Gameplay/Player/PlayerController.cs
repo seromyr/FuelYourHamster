@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
         if ((Input.GetKeyDown(CONST.LEFT_KEY) || Input.GetKeyDown(CONST.RIGHT_KEY)) & Player.main.AllowPlayerControl)
         {
             // Pass along the pressed key info
-            OnChangeLaneKeypressed?.Invoke(this, new KeyInfo { keyPressed = Input.inputString });
+            OnChangeLaneKeypressed?.Invoke(this, new KeyInfo { keyPressed = Input.inputString.ToLower() /*Caplock input fixed*/ });
         }
     }
 

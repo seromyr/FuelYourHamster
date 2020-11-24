@@ -163,7 +163,9 @@ namespace Constants
         public const string                  PLAYER_COLLECT_COLOR                  = "#00FF32";
                                                                                    
         // Player default money                                                    
-        public const int                     PLAYER_DEFAUL_MONEY                   = 0;
+        public const int                     PLAYER_DEFAULT_MONEY                   = 100;
+        // Player bonus reward money                                                    
+        public const int                     PLAYER_BONUS_MONEY                     = 50;
     }                                                                              
                                                                                    
     public static class TAG                                                        

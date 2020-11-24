@@ -14,11 +14,12 @@ public class QuestMechanic : MonoBehaviour
         if (e.hashCode == gameObject.name)
         {
             Destroy(gameObject);
-            Debug.LogError("Collected quest item: " + gameObject.name);
+            Debug.Log("Collected quest item: " + gameObject.name);
             QuestController.main.LoadNextQuestCollectible();
             QuestController.main.AddCollectedCharacter(gameObject.name[0].ToString());
             QuestController.main.ProgressQuest();
             Player.main.ChangeCollisionColor(Color.white);
+            UI_Gameplay_Mechanic.main.HighlightQuestImageOnHUD();
         }
     }
 

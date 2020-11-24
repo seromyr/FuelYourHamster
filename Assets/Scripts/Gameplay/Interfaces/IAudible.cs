@@ -1,0 +1,4 @@
+﻿interface IAudible
+{
+    void Play();
+}

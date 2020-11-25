@@ -38,6 +38,11 @@ public class UI_HealthMechanic : MonoBehaviour
             healthGraphics[i].enabled = true;
         }
 
+        for (int i = Player.main.MaxHealth; i < healthGraphics.Count; i++)
+        {
+            healthGraphics[i].enabled = false;
+        }
+
         // Update current health
         for (int i = 0; i < Player.main.Health; i++)
         {

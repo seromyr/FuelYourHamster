@@ -8,6 +8,7 @@ public class SoundController : MonoBehaviour
 {
     public static SoundController main;
 
+    [SerializeField]
     private List<AudioClip> musicLibrary, soundLibrary;
     public List<AudioClip> SoundLibrary { get { return soundLibrary; } }
 
@@ -19,6 +20,8 @@ public class SoundController : MonoBehaviour
     private AudioState soundState, musicState;
     public AudioState SoundState { get { return soundState; } }
     public AudioState MusicState { get { return musicState; } }
+
+    private GameObject sfxAudioSourceContainer;
 
     void Awake()
     {
@@ -36,6 +39,9 @@ public class SoundController : MonoBehaviour
 
         soundLibrary = new List<AudioClip>();
         soundLibrary.AddRange(Resources.LoadAll<AudioClip>("SFX/Sounds"));
+
+        sfxAudioSourceContainer = new GameObject("AudioSourceContainer");
+        sfxAudioSourceContainer.transform.SetParent(transform);
     }
 
     private void Start()
@@ -45,7 +51,7 @@ public class SoundController : MonoBehaviour
             musicSource.clip = musicLibrary[0];
         }
 
-        musicSource.volume = 0.15f;
+        musicSource.volume = CONST.DEFAULT_BGM_VOLUME;
         musicSource.playOnAwake = false;
         musicSource.loop = true;
     }
@@ -92,7 +98,7 @@ public class SoundController : MonoBehaviour
                 break;
             case AudioState.Off:
                 musicState = AudioState.On;
-                musicSource.volume = 1;
+                musicSource.volume = CONST.DEFAULT_BGM_VOLUME;
                 break;
         }
     }
@@ -104,13 +110,29 @@ public class SoundController : MonoBehaviour
 
     public void SwitchSoundState()
     {
-        soundState = soundState == AudioState.Off ? AudioState.On : AudioState.Off;
+        switch (soundState)
+        {
+            case AudioState.On:
+                soundState = AudioState.Off;
+                for (int i = 0; i < sfxAudioSourceContainer.transform.childCount; i++)
+                {
+                    sfxAudioSourceContainer.transform.GetChild(i).GetComponent<AudioSource>().volume = 0;
+                }
+                break;
+            case AudioState.Off:
+                soundState = AudioState.On;
+                for (int i = 0; i < sfxAudioSourceContainer.transform.childCount; i++)
+                {
+                    sfxAudioSourceContainer.transform.GetChild(i).GetComponent<AudioSource>().volume = 1;
+                }
+                break;
+        }
     }
 
     public AudioSource CreateASoundPlayer(Transform owner)
     {
-        GameObject soundPlayer = new GameObject("SoundPlayer of" + owner.name);
-        soundPlayer.transform.SetParent(owner);
+        GameObject soundPlayer = new GameObject("SoundPlayer of " + owner.name);
+        soundPlayer.transform.SetParent(sfxAudioSourceContainer.transform);
 
         AudioSource thisAutioSource = soundPlayer.AddComponent<AudioSource>();
         thisAutioSource.playOnAwake = false;

@@ -16,9 +16,9 @@ public class UI_PlayGame : MonoBehaviour
 
         soundPlayer = SoundController.main.CreateASoundPlayer(transform);
     }
+
     public void NewGame()
     {
-        //GameManager.main.NewGame();
         GameManager.main.ShowHowToPlay();
         PlaySound();
     }

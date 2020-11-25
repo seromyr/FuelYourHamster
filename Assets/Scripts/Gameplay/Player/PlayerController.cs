@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IAudible
 {
     public event EventHandler<KeyInfo> OnChangeLaneKeypressed;
     public event EventHandler OnJumpKeyPressed;
@@ -39,6 +39,8 @@ public class PlayerController : MonoBehaviour
 
         OnChangeLaneKeypressed += ChangeLane;
         OnJumpKeyPressed += Jump;
+
+        SoundSetup();
     }
 
     private void FixedUpdate()
@@ -87,6 +89,7 @@ public class PlayerController : MonoBehaviour
     {
         // Basic jump
         Player.main.RigidBody.velocity = Vector3.up * jumpVelocity;
+        PlaySound(SoundController.main.SoundLibrary[3]);
     }
 
     private void JumpMechanic()
@@ -134,4 +137,17 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+
+    #region Interfaces Implementation
+    private AudioSource soundPlayer;
+    public void SoundSetup()
+    {
+        soundPlayer = SoundController.main.CreateASoundPlayer(transform);
+    }
+
+    public void PlaySound(AudioClip sound)
+    {
+        SoundController.main.PlaySound(soundPlayer, sound);
+    }
+    #endregion
 }

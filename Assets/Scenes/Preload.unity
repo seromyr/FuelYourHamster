@@ -3900,7 +3900,7 @@ GameObject:
   - component: {fileID: 707249766}
   - component: {fileID: 707249765}
   m_Layer: 5
-  m_Name: Button
+  m_Name: HowToPlayConfirmButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6699,6 +6699,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e82acbbc0eb336b4ca4ac241559ef9ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicLibrary: []
+  soundLibrary: []
 --- !u!81 &1056382686
 AudioListener:
   m_ObjectHideFlags: 0

@@ -12,11 +12,6 @@ public class UpgradeData : MonoBehaviour
     [SerializeField]
     private UpgradeStat[] stats;
     public UpgradeStat[] Stats { get { return stats; } }
-    public UpgradeStat FuelEfficiency { get { return stats[0]; } }
-    public UpgradeStat MaxHealth { get { return stats[1]; } }
-    public UpgradeStat MaxFuel { get { return stats[2]; } }
-    public UpgradeStat HamsterBall { get { return stats[3]; } }
-    public UpgradeStat MoneyMagnet { get { return stats[4]; } }
 
     private void Awake()
     {
@@ -129,5 +124,23 @@ public class UpgradeData : MonoBehaviour
         {
             stats[statID].cost = stats[statID].nextCost;
         }
+    }
+
+    public void Reset()
+    {
+
+        // Re-initialize
+        CreateUpgradeData();
+
+        for (int i = 0; i < stats.Length; i++)
+        {
+            Debug.Log("stat " + i + " level " + stats[i].level  );
+        }
+
+        // Clear Money Magnet game object
+        Destroy(GameObject.Find("MoneyMagnet"));
+
+        // Clear HamsterBall
+        Destroy(GameObject.Find("HamsterBall"));
     }
 }

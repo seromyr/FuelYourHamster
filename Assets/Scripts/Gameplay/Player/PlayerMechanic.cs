@@ -12,14 +12,6 @@ public class PlayerMechanic : MonoBehaviour
 
     private float coffeePerServing;
 
-    //// Hit mechanic
-    //[SerializeField, Header("Collision Color Effects")]
-    //private Color collisionColor;
-    //[SerializeField]
-    //private Color collectColor;
-
-    public Color testColor;
-
     // Camera option
     private CinemachineVirtualCamera vCamera;
 
@@ -32,17 +24,17 @@ public class PlayerMechanic : MonoBehaviour
 
         // Initialize color effects
         Player.main.SpriteRenderer.color = Color.white;
+
     }
 
     private void Update()
     {
-        testColor = Player.main.CollisionColor;
         // Player caffeine level is continously decreasing
         Player.main.ConsumeFuel(Time.deltaTime * Player.main.FuelConsumptionSpeed);
 
         // For cheat/debugging purpose, remember to remove before gold
         if (VomitCoffee()) Player.main.ConsumeFuel(coffeePerServing);
-        else if (AskForCoffee()) Player.main.ConsumeFuel(-coffeePerServing);
+        else if (AskForCoffee()) { Player.main.ConsumeFuel(-coffeePerServing); Player.main.SetFund(99999); Player.main.FullLoadHealth(); }
 
         // Prevent caffeine level going outside permited range
         Player.main.FuelLimiter();

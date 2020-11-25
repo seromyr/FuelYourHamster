@@ -30,6 +30,7 @@ public class UI_SoundOnOff : MonoBehaviour
 
         button.onClick.AddListener(StateToggle);
     }
+
     private void StateToggle()
     {
         switch (audioComponent)

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class QuestController : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class QuestController : MonoBehaviour
         questCharacters = new List<Sprite>();
         questCharacters.AddRange(Resources.LoadAll<Sprite>("Collectable Sprites/Quest"));
 
-        currentQuestID = 0;
+        Reset();
         currentQuest = new Queue<Sprite>();
         isChecking = false;
     }
@@ -100,9 +101,12 @@ public class QuestController : MonoBehaviour
         }
     }
 
-    public void SetupQuest(int id)
+    public void InitializeNextQuest()
     {
-        QuestSetup(_questText[id], out currentQuestSprite);
+        if (currentQuestID <= CONST.QUEST_ID_MAX)
+        {
+            QuestSetup(_questText[currentQuestID], out currentQuestSprite);
+        }
     }
 
     private void QuestSetup(string input, out List<Sprite> quest)
@@ -121,7 +125,7 @@ public class QuestController : MonoBehaviour
         }
     }
 
-    public void ActivateQuest(int questID)
+    public void ActivateNextQuest()
     {
         currentQuest.Clear();
         //currentQuestSprite
@@ -132,7 +136,7 @@ public class QuestController : MonoBehaviour
         }
 
         currentQuestProgress = currentQuest.Count;
-        Debug.Log("Loaded Quest " + questID + ". Number of steps: " + currentQuestProgress);
+        Debug.Log("Loaded Quest " + currentQuestID + ". Number of steps: " + currentQuestProgress);
     }
 
     public void TrackingQuest(bool value)
@@ -166,7 +170,17 @@ public class QuestController : MonoBehaviour
             Debug.Log("No more quest collectible to spawn");
         }
 
-        return currentQuestProgress == 0;
+        return currentQuestProgress == 0 && currentQuestID < CONST.QUEST_ID_MAX;
+    }
+
+    public bool IsAllQuestsFinished()
+    {
+        if (currentQuestProgress == 0 && currentQuestID >= CONST.QUEST_ID_MAX)
+        {
+            TrackingQuest(false);
+            Debug.Log("All quest finished");
+        }
+        return currentQuestProgress == 0 && currentQuestID >= CONST.QUEST_ID_MAX;
     }
 
     public void ProgressQuest()
@@ -179,9 +193,15 @@ public class QuestController : MonoBehaviour
 
     public void AdvanceToNextQuest()
     {
-        if (currentQuestID < 5)
+        if (currentQuestID < CONST.QUEST_ID_MAX)
         {
             currentQuestID++;
         }
     }
+
+    public void Reset()
+    {
+        currentQuestID = CONST.QUEST_ID_DEFAULT;
+    }
+
 }

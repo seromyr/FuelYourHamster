@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 
-public class CoinMechanic : MonoBehaviour
+public class CoinMechanic : MonoBehaviour, IAudible
 {
     private void Start()
     {
         Player.main.Mechanic.OnCollisionWithCollectible += OnCollected;
+        SoundSetup();
     }
 
     public void OnCollected(object sender, CollectibleType e)
@@ -20,6 +21,7 @@ public class CoinMechanic : MonoBehaviour
             Player.main.AddIncome(1);
             //Debug.Log("1 coin collected");
             Player.main.ChangeCollisionColor(Color.white);
+            PlaySound(SoundController.main.SoundLibrary[1]);
         }
     }
 
@@ -28,4 +30,17 @@ public class CoinMechanic : MonoBehaviour
         //Debug.Log("Coin: " + transform.name + " destroyed");
         Player.main.Mechanic.OnCollisionWithCollectible -= OnCollected;
     }
+
+    #region Interfaces Implementation
+    private AudioSource soundPlayer;
+    public void SoundSetup()
+    {
+        soundPlayer = SoundController.main.CreateASoundPlayer(transform);
+    }
+
+    public void PlaySound(AudioClip sound)
+    {
+        SoundController.main.PlaySound(soundPlayer, sound);
+    }
+    #endregion
 }

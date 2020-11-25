@@ -7,6 +7,7 @@ public class UI_PurchaseMonitoring : MonoBehaviour
 {
     private int statID;
     private Button button;
+    private AudioSource soundPlayer;
 
     void Start()
     {
@@ -14,6 +15,8 @@ public class UI_PurchaseMonitoring : MonoBehaviour
         GetUpgradeStatID();
 
         button.onClick.AddListener(PurchaseAction);
+
+        soundPlayer = SoundController.main.CreateASoundPlayer(transform);
     }
 
     void Update()
@@ -52,5 +55,11 @@ public class UI_PurchaseMonitoring : MonoBehaviour
     private void PurchaseAction()
     {
         GameManager.main.PurchaseUpgrade(statID);
+        PlaySound();
+    }
+
+    private void PlaySound()
+    {
+        SoundController.main.PlaySound(soundPlayer, SoundController.main.SoundLibrary[7]);
     }
 }

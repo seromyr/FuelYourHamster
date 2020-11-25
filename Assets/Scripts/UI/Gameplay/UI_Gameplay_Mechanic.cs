@@ -106,4 +106,9 @@ public class UI_Gameplay_Mechanic : MonoBehaviour
         questImageIndex++;
         Debug.Log("item: " + gameObject.name);
     }
+
+    public void Reset()
+    {
+        
+    }
 }

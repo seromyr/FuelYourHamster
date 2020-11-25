@@ -15,6 +15,7 @@ namespace Constants
         Playing,
         Win,
         Lose,
+        End
     }
 
     // Dodge mechanic
@@ -166,6 +167,13 @@ namespace Constants
         public const int                     PLAYER_DEFAULT_MONEY                   = 100;
         // Player bonus reward money                                                    
         public const int                     PLAYER_BONUS_MONEY                     = 50;
+
+        public const int                     QUEST_ID_DEFAULT                       = 0;
+        public const int                     QUEST_ID_MAX                           = 4;
+
+        public const float                   DEFAULT_BGM_VOLUME                     = 0.15f;
+        public const float                   DEFAULT_SFX_VOLUME                     = 1;
+
     }                                                                              
                                                                                    
     public static class TAG                                                        

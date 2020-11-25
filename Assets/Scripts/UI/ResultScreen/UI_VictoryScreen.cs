@@ -8,7 +8,7 @@ public class UI_VictoryScreen : MonoBehaviour
     public static UI_VictoryScreen main;
 
     private Canvas canvas;
-    private Text summaryText;
+    private Text summaryText, titleText;
 
     private void Awake()
     { 
@@ -18,6 +18,7 @@ public class UI_VictoryScreen : MonoBehaviour
         TryGetComponent(out canvas);
 
         transform.Find("Panel").transform.Find("Message").TryGetComponent(out summaryText);
+        transform.Find("Panel").transform.Find("Title").TryGetComponent(out titleText);
     }
 
     private void Singletonize()
@@ -33,7 +34,7 @@ public class UI_VictoryScreen : MonoBehaviour
         }
     }
 
-    public void SetCanvasAtive(bool value)
+    public void SetCanvasActive(bool value)
     {
         canvas.enabled = value;
     }
@@ -41,5 +42,10 @@ public class UI_VictoryScreen : MonoBehaviour
     public void SetSummaryText(string text)
     {
         summaryText.text = text;
+    }
+
+    public void SetTitle(string text)
+    {
+        titleText.text = text;
     }
 }

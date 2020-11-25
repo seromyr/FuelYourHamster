@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     public static GameManager main;
-    public event EventHandler OnGamePlay;
+    public event EventHandler OnGamePlay, OnGameEnd;
 
     [SerializeField]
     private GameState currentGameState, targetGameState;
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
 
         UI_UpgradeMenu.main.SetCanvasAtive(false);
         UI_RunResultScreen.main.SetCanvasAtive(false);
-        UI_VictoryScreen.main.SetCanvasAtive(false);
+        UI_VictoryScreen.main.SetCanvasActive(false);
 
         loadDuration = 1f;
 
@@ -90,8 +90,9 @@ public class GameManager : MonoBehaviour
             case GameState.New:     NewGameRoutine();   break;
             case GameState.Playing: PerformGameplay();  break;
             case GameState.Pausing: PauseGamePlay();    break;
-            case GameState.Lose:    ShowSummary();      break;
-            case GameState.Win:     ShowVictory();      break;
+            case GameState.Lose:    ShowDebrief(1);     break;
+            case GameState.Win:     ShowDebrief(2);     break;
+            case GameState.End:     ShowDebrief(3);     break;
         }
     }
 
@@ -99,6 +100,7 @@ public class GameManager : MonoBehaviour
     {
         UI_MainMenu.main.SetCanvasActive(true);
         UI_MainMenu.main.FadeOut(loadDuration + 1f);
+        UI_MainMenu.main.Reset();
 
         UI_LoadingScreen.main.SetCanvasActiveWithDelay(true, loadDuration);
         UI_LoadingScreen.main.SetCanvasActiveWithDelay(false, loadDuration + 1.5f);
@@ -116,8 +118,8 @@ public class GameManager : MonoBehaviour
         Player.main.IsKinematic(true);
         Player.main.SetActive(false);
 
-        QuestController.main.SetupQuest(QuestController.main.CurrentActiveQuestID);
-        QuestController.main.ActivateQuest(QuestController.main.CurrentActiveQuestID);
+        QuestController.main.InitializeNextQuest();
+        QuestController.main.ActivateNextQuest();
         QuestController.main.TrackingQuest(true);
 
         switch (targetGameState)
@@ -170,7 +172,7 @@ public class GameManager : MonoBehaviour
         DiffilcultyController.main.ResetSpawningRange();
 
         // Main Quest setup
-        QuestController.main.SetupQuest(QuestController.main.CurrentActiveQuestID);
+        QuestController.main.InitializeNextQuest();
         QuestController.main.AssignCollectibleContainer();
         QuestController.main.LoadNextQuestCollectible();
         QuestController.main.ClearCollectedCharacters();
@@ -182,15 +184,7 @@ public class GameManager : MonoBehaviour
         UI_Gameplay_Mechanic.main.DisplayActiveQuest();
         UI_UpgradeMenu.main.SetCanvasAtive(false);
         UI_RunResultScreen.main.SetCanvasAtive(false);
-        UI_VictoryScreen.main.SetCanvasAtive(false);
-
-        // Create summary text;
-        summaryText =
-            (
-                  "Run duration: "          + DiffilcultyController.main.RunTime
-                + "\nMax speed: "           + DiffilcultyController.main.MaxSpeed + " km/h"
-                + "\nCoins collected: "     + Player.main.Income
-            );
+        UI_VictoryScreen.main.SetCanvasActive(false);
 
         gameStateUpdating = false;
     }
@@ -204,6 +198,12 @@ public class GameManager : MonoBehaviour
             currentGameState = GameState.Win;
             QuestController.main.AdvanceToNextQuest();
         }
+        else if (QuestController.main.IsAllQuestsFinished())
+        {
+            Debug.LogError("EndGame");
+            currentGameState = GameState.End;
+            OnGameEnd?.Invoke(this, EventArgs.Empty);
+        }
 
         CheckUpgradeAvailability();
         CheckPlayerHealth();
@@ -215,28 +215,17 @@ public class GameManager : MonoBehaviour
         UI_UpgradeMenu.main.SetCanvasAtive(true);
     }
 
-    private void ShowSummary()
+    private void ShowDebrief(int sequenceID)
     {
         Player.main.ControlPermission(false);
         Player.main.IsConsumingFuel(false);
-        gameStateUpdating = false;
-        StartCoroutine(EndRunSequence());
 
         // Mark the end time of the run
         DiffilcultyController.main.MarkEndTime();
-    }
 
-    private void ShowVictory()
-    {
-        Player.main.ControlPermission(false);
-        Player.main.IsConsumingFuel(false);
         gameStateUpdating = false;
-        UI_VictoryScreen.main.SetCanvasAtive(true);
-        UI_VictoryScreen.main.SetSummaryText(summaryText + "\nBonus Reward: " + CONST.PLAYER_BONUS_MONEY + "coins");
-        Player.main.AddFundToWallet(CONST.PLAYER_BONUS_MONEY);
 
-        // Mark the end time of the run
-        DiffilcultyController.main.MarkEndTime();
+        StartCoroutine(EndRunSequence(sequenceID));
     }
 
     private void CheckUpgradeAvailability()
@@ -286,14 +275,46 @@ public class GameManager : MonoBehaviour
         SoundController.main.PlayBGM();
     }
 
-    private IEnumerator EndRunSequence()
+    private IEnumerator EndRunSequence(int sequenceID)
     {
-        UI_Gameplay_Mechanic.main.ShowEndRunNotice();
-        yield return new WaitForSeconds(3);
+        // Update summary text;
+        summaryText =
+            (
+                  "Run duration: "      + DiffilcultyController.main.RunTime
+                + "\nMax speed: "       + DiffilcultyController.main.MaxSpeed + " km/h"
+                + "\nCoins collected: " + Player.main.Income
+            );
 
-        // Show lose game screen
-        UI_RunResultScreen.main.SetCanvasAtive(true);
-        UI_RunResultScreen.main.SetSummaryText(summaryText + "\nCharacter Collected: " + QuestController.main.CharacterCollected);
+        switch (sequenceID)
+        {
+            case 1:
+                UI_Gameplay_Mechanic.main.ShowEndRunNotice();
+                yield return new WaitForSeconds(3);
+
+                // Show lose game screen
+                UI_RunResultScreen.main.SetCanvasAtive(true);
+                UI_RunResultScreen.main.SetSummaryText(summaryText + "\nCharacter Collected: " + QuestController.main.CharacterCollected);
+                break;
+
+            case 2:
+                yield return new WaitForSeconds(1);
+
+                // Show victory game screen
+                UI_VictoryScreen.main.SetCanvasActive(true);
+                UI_VictoryScreen.main.SetTitle("MISSION COMPLETED");
+                UI_VictoryScreen.main.SetSummaryText(summaryText + "\nBonus Reward: " + CONST.PLAYER_BONUS_MONEY + " coins");
+                Player.main.AddFundToWallet(CONST.PLAYER_BONUS_MONEY);
+                break;
+
+            case 3:
+                yield return new WaitForSeconds(1);
+
+                // Show victory game screen
+                UI_VictoryScreen.main.SetCanvasActive(true);
+                UI_VictoryScreen.main.SetTitle("CONGRATULATIONS!");
+                UI_VictoryScreen.main.SetSummaryText("You beat Fuel Your Hamster!!\nThank you for playing.");
+                break;
+        }
     }
 
     public void PurchaseUpgrade(int statID)
@@ -346,6 +367,11 @@ public class GameManager : MonoBehaviour
     // PUBLIC METHODS
     public void GoToTheMainMenu()
     {
+        ResetGame();
+
+        targetGameState = GameState.Start;
+        gameStateUpdating = true;
+        LoadRoutine();
     }
 
     public void ShowHowToPlay()
@@ -376,6 +402,26 @@ public class GameManager : MonoBehaviour
     {
         gameStateUpdating = true;
         currentGameState = GameState.Lose;
+    }
+
+    private void ResetGame()
+    {
+        // Reset player
+        Player.main.Reset();
+
+        // Reset upgrade
+        UpgradeData.main.Reset();
+
+        // Reset quest progress
+        QuestController.main.Reset();
+
+        // Reset UI
+        UI_UpgradeMenu.main.Reset();
+        UI_UpgradeMenu.main.SetCanvasAtive(false);
+
+        UI_RunResultScreen.main.SetCanvasAtive(false);
+        UI_VictoryScreen.main.SetCanvasActive(false);
+        coffee_O_Meter.SetBarLevel(UpgradeData.main.Stats[2].level);
     }
 }
 

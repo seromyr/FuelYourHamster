@@ -360,4 +360,10 @@ public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsu
     {
         _collisionColor = color;
     }
+
+    public void Reset()
+    {
+        GameplaySetup();
+        SetFund(CONST.PLAYER_DEFAULT_MONEY);
+    }
 }

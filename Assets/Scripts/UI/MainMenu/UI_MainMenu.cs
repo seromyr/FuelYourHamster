@@ -4,7 +4,6 @@ using UnityEditor;
 using UnityEngine;
 using Constants;
 
-
 public class UI_MainMenu : MonoBehaviour
 {
     public static UI_MainMenu main;
@@ -114,5 +113,10 @@ public class UI_MainMenu : MonoBehaviour
         creditButton.SetActive(!value);
         playButton.SetActive(!value);
         copyright.SetActive(!value);
+    }
+
+    public void Reset()
+    {
+        SetHowToPlayActive(false);
     }
 }

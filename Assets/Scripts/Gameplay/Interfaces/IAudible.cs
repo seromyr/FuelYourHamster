@@ -1,4 +1,8 @@
-﻿interface IAudible
+﻿using UnityEngine;
+
+interface IAudible
 {
-    void Play();
+    void SoundSetup();
+
+    void PlaySound(AudioClip sound);
 }

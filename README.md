@@ -1,2 +1,2 @@
 # FuelYourHamster
-Visit our game page here https://sites.google.com/view/fuelyourhamster/overview
+Visit our game page here https://sites.google.com/view/fuel-your-hamster/overview

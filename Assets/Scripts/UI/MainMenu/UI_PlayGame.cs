@@ -4,27 +4,33 @@ using UnityEngine;
 using UnityEngine.UI;
 using Constants;
 
-public class UI_PlayGame : MonoBehaviour
+public class UI_PlayGame : MonoBehaviour, IAudible
 {
     private Button button;
-    private AudioSource soundPlayer;
 
     private void Start()
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(NewGame);
-
-        soundPlayer = SoundController.main.CreateASoundPlayer(transform);
+        SoundSetup();
     }
 
     public void NewGame()
     {
         GameManager.main.ShowHowToPlay();
-        PlaySound();
+        PlaySound(SoundController.main.SoundLibrary[0]);
     }
 
-    private void PlaySound()
+    #region Interfaces Implementation
+    private AudioSource soundPlayer;
+    public void SoundSetup()
     {
-        SoundController.main.PlaySound(soundPlayer, SoundController.main.SoundLibrary[0]);
+        soundPlayer = SoundController.main.CreateASoundPlayer(transform);
     }
+
+    public void PlaySound(AudioClip sound)
+    {
+        SoundController.main.PlaySound(soundPlayer, sound);
+    }
+    #endregion
 }

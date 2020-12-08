@@ -158,6 +158,7 @@ public class GameManager : MonoBehaviour
 
         // Player setup
         Player.main.SetActive(true);
+        Player.main.SwitchToGameplayAvatar();
         Player.main.IsKinematic(false);
         Player.main.AssignVault();
         Player.main.ResetIncome();
@@ -197,6 +198,8 @@ public class GameManager : MonoBehaviour
         {
             currentGameState = GameState.Win;
             QuestController.main.AdvanceToNextQuest();
+            Player.main.PlaySound(SoundController.main.SoundLibrary[10]);
+            SoundController.main.StopBGM();
         }
         else if (QuestController.main.IsAllQuestsFinished())
         {
@@ -206,8 +209,7 @@ public class GameManager : MonoBehaviour
         }
 
         CheckUpgradeAvailability();
-        CheckPlayerHealth();
-        CheckPlayerCaffeineLevel();
+        CheckLoseConditions();
     }
 
     private void PauseGamePlay()
@@ -240,19 +242,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void CheckPlayerHealth()
+    private void CheckLoseConditions()
     {
-        if (Player.main.Health <= 0)
+        if (Player.main.IsOutOfHealth() || Player.main.IsOutOfCaffeine())
         {
             currentGameState = GameState.Lose;
-        }
-    }
-
-    private void CheckPlayerCaffeineLevel()
-    {
-        if (Player.main.CaffeineCurrentLevel <= 0)
-        {
-            currentGameState = GameState.Lose;
+            Player.main.SwitchToLoseAvatar();
+            Player.main.PlaySound(SoundController.main.SoundLibrary[9]);
+            SoundController.main.StopBGM();
         }
     }
 

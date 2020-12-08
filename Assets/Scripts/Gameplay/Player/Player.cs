@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 
-public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsumable, IMoneyObtainable
+public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsumable, IMoneyObtainable, IAudible
 {
     public static Player main;
 
@@ -17,6 +17,7 @@ public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsu
     private float               _caffeineConsumingSpeed;
     private SpriteRenderer      _spriteRenderer;
     private Color               _collisionColor;
+    private AudioSource         _soundPlayer;
 
     // Player get access to vault
     private ObjectReserve.Vault _vault01, _vault02, _vault03;
@@ -109,6 +110,8 @@ public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsu
         _spriteRenderer                  = _avatar.AddComponent<SpriteRenderer>();
         _spriteRenderer.sprite           = Resources.Load<Sprite>("Player/Hamster_rear");
         _spriteRenderer.material         = Resources.Load<Material>("Materials/SpriteShadow");
+
+        SoundSetup();
     }
 
     protected override void CreateMechanic()
@@ -289,6 +292,16 @@ public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsu
     {
         _moneyCurrent = 0;
     }
+
+    public void SoundSetup()
+    {
+        _soundPlayer = SoundController.main.CreateASoundPlayer(_avatar.transform);
+    }
+
+    public void PlaySound(AudioClip sound)
+    {
+        SoundController.main.PlaySound(_soundPlayer, sound);
+    }
     #endregion
 
     public void AssignVault()
@@ -323,6 +336,7 @@ public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsu
                     }
                 }
                 break;
+
             case PrimeObj.VAULT02:
                 for (int i = 0; i < _vault02.capacity; i++)
                 {
@@ -333,6 +347,7 @@ public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsu
                     }
                 }
                 break;
+
             case PrimeObj.VAULT03:
                 for (int i = 0; i < _vault03.capacity; i++)
                 {
@@ -365,5 +380,25 @@ public class Player : Entity, IControlable, IUpgradeable, IDamageble, IFuelConsu
     {
         GameplaySetup();
         SetFund(CONST.PLAYER_DEFAULT_MONEY);
+    }
+
+    public void SwitchToGameplayAvatar()
+    {
+        _spriteRenderer.sprite = Resources.Load<Sprite>("Player/Hamster_rear");
+    }
+
+    public void SwitchToLoseAvatar()
+    {
+        _spriteRenderer.sprite = Resources.Load<Sprite>("Player/Hamster_3");
+    }
+
+    public bool IsOutOfHealth()
+    {
+        return _health <= 0;
+    }
+
+    public bool IsOutOfCaffeine()
+    {
+        return _caffeineLevel <= 0;
     }
 }

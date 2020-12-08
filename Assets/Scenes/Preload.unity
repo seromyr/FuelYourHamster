@@ -2612,8 +2612,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 5b671ab0166498c4da576e3478859798, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3010,7 +3010,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &583798662
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3051,8 +3051,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 5b671ab0166498c4da576e3478859798, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3552,8 +3552,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 5b671ab0166498c4da576e3478859798, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4064,11 +4064,11 @@ RectTransform:
   m_Father: {fileID: 902667868}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 104}
+  m_SizeDelta: {x: 1100, y: 64}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &725949633
 GameObject:
   m_ObjectHideFlags: 0
@@ -4205,8 +4205,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 5b671ab0166498c4da576e3478859798, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4578,7 +4578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startY: -2000
-  speed: 300
+  speed: 150
 --- !u!114 &815670114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4613,15 +4613,14 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "FUEL YOUR HAMSTER \n\n\nRadikal Games\n\nLead Game Designer\nBuu Nguyen\n\nGame
-    Designer\nJosh Capstick\n\nLead Programmer\nBuu Nguyen\n\nProgrammer\nJosh Capstick\n\nArt
-    Director\nBuu Nguyen\n\nLead Artist\nBuu Nguyen\n\nSound Designer\nBuu Nguyen\n\nProducer\nBuu
-    Nguyen\n\nTechnical  & Design Advisor\nSam Robichaud\n\nQuality Assurances\nBuu
-    Nguyen\nJosh Capstick\n\nSongs Attribution\n\nEmpty House by Mana Junkie (c)
-    copyright 2020 Licensed under a Creative Commons Attribution Noncommercial  (3.0)
-    license. http://dig.ccmixter.org/files/mana_junkie/62219 Ft: SiobhanD\n\nRay
-    of Hope by Apoxode (c) copyright 2020 Licensed under a Creative Commons Attribution
-    Noncommercial  (3.0) license. http://dig.ccmixter.org/files/Apoxode/62371 Ft:
-    airtone, Javolenus\n\nSpecial thanks to\nFriends & family"
+    Designer\nJosh Capstick\n\nProgrammer\nBuu Nguyen\n\n\nArt Director\nBuu Nguyen\n\nSound
+    Designer\nBuu Nguyen\n\nProducer\nBuu Nguyen\n\nGame Design Advisor\nSam Robichaud\n\nGame
+    Testers\nBuu Nguyen\nJosh Capstick\nVi Nguyen\n\nSongs Attribution\n\nEmpty House
+    by Mana Junkie (c) copyright 2020 Licensed under a Creative Commons Attribution
+    Noncommercial  (3.0) license. http://dig.ccmixter.org/files/mana_junkie/62219
+    Ft: SiobhanD\n\nRay of Hope by Apoxode (c) copyright 2020 Licensed under a Creative
+    Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/Apoxode/62371
+    Ft: airtone, Javolenus\n\nSpecial thanks to\nFriends & family"
 --- !u!222 &815670115
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7129,8 +7128,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 5b671ab0166498c4da576e3478859798, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -9916,6 +9915,7 @@ GameObject:
   - component: {fileID: 1671038981}
   - component: {fileID: 1671038983}
   - component: {fileID: 1671038982}
+  - component: {fileID: 1671038984}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -9937,11 +9937,11 @@ RectTransform:
   m_Father: {fileID: 902667868}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 18, y: -18}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: -320, y: 128}
   m_SizeDelta: {x: 160, y: 64}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1671038982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9958,7 +9958,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -9975,7 +9975,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Collected
+  m_Text: Collect
 --- !u!222 &1671038983
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9984,6 +9984,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1671038980}
   m_CullTransparentMesh: 0
+--- !u!114 &1671038984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671038980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1681341806
 GameObject:
   m_ObjectHideFlags: 0
@@ -10174,8 +10189,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 5b671ab0166498c4da576e3478859798, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -12149,8 +12164,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 5b671ab0166498c4da576e3478859798, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -12627,7 +12642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6431373, g: 0.24705882, b: 0.24705882, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13082,8 +13097,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 5b671ab0166498c4da576e3478859798, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -13482,11 +13497,11 @@ RectTransform:
   m_Father: {fileID: 6476783359308855693}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 140}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -64, y: 64}
   m_SizeDelta: {x: 704, y: 64}
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &6476783358477450048
 RectTransform:
   m_ObjectHideFlags: 0

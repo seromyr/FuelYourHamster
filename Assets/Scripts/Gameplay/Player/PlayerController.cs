@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IAudible
+public class PlayerController : MonoBehaviour
 {
     public event EventHandler<KeyInfo> OnChangeLaneKeypressed;
     public event EventHandler OnJumpKeyPressed;
@@ -39,14 +39,19 @@ public class PlayerController : MonoBehaviour, IAudible
 
         OnChangeLaneKeypressed += ChangeLane;
         OnJumpKeyPressed += Jump;
+    }
 
-        SoundSetup();
+    private void Update()
+    {
+        // Fixed inresponsive input
+        GameplayInputListener();
     }
 
     private void FixedUpdate()
     {
-        GameplayInputListener();
         JumpMechanic();
+        SwitchLaneMechanic();
+
         rb_speed = Player.main.RigidBody.velocity.magnitude;
     }
 
@@ -78,7 +83,7 @@ public class PlayerController : MonoBehaviour, IAudible
 
     private void LaneChangeRequest()
     {
-        if ((Input.GetKeyDown(CONST.LEFT_KEY) || Input.GetKeyDown(CONST.RIGHT_KEY)) & Player.main.AllowPlayerControl)
+        if ((Input.GetKey(CONST.LEFT_KEY) || Input.GetKey(CONST.RIGHT_KEY)) & Player.main.AllowPlayerControl)
         {
             // Pass along the pressed key info
             OnChangeLaneKeypressed?.Invoke(this, new KeyInfo { keyPressed = Input.inputString.ToLower() /*Caplock input fixed*/ });
@@ -89,7 +94,7 @@ public class PlayerController : MonoBehaviour, IAudible
     {
         // Basic jump
         Player.main.RigidBody.velocity = Vector3.up * jumpVelocity;
-        PlaySound(SoundController.main.SoundLibrary[3]);
+        Player.main.PlaySound(SoundController.main.SoundLibrary[3]);
     }
 
     private void JumpMechanic()
@@ -111,43 +116,50 @@ public class PlayerController : MonoBehaviour, IAudible
         switch (e.keyPressed)
         {
             case CONST.LEFT_KEY_STRING:
-                if (currentLane != Lane.Left) currentLane--;
+                if (currentLane != Lane.Left)
+                {
+                    currentLane--;
+                    Player.main.PlaySound(SoundController.main.SoundLibrary[8]);
+                }
                 break;
 
             case CONST.RIGHT_KEY_STRING:
-                if (currentLane != Lane.Right) currentLane++;
+                if (currentLane != Lane.Right)
+                {
+                    currentLane++;
+                    Player.main.PlaySound(SoundController.main.SoundLibrary[8]);
+                }
                 break;
         }
+    }
 
+    private void SwitchLaneMechanic()
+    {
         switch (currentLane)
         {
             case Lane.Left:
-                transform.localPosition = new Vector3(defaultPosition.x + 4.5f, transform.localPosition.y, transform.localPosition.z);
+                Strafe(defaultPosition.x + 4.5f);
                 Player.main.IsInLaneNumber(3);
                 break;
 
             case Lane.Middle:
-                transform.localPosition = new Vector3(defaultPosition.x, transform.localPosition.y, transform.localPosition.z);
+                Strafe(defaultPosition.x);
                 Player.main.IsInLaneNumber(2);
                 break;
 
             case Lane.Right:
-                transform.localPosition = new Vector3(defaultPosition.x - 4.5f, transform.localPosition.y, transform.localPosition.z);
+                Strafe(defaultPosition.x - 4.5f);
                 Player.main.IsInLaneNumber(1);
                 break;
         }
     }
 
-    #region Interfaces Implementation
-    private AudioSource soundPlayer;
-    public void SoundSetup()
+    private void Strafe(float distance)
     {
-        soundPlayer = SoundController.main.CreateASoundPlayer(transform);
+        if (transform.localPosition.x != distance)
+        {
+            float speed = Time.deltaTime * Mathf.Pow(4, 2 + Mathf.Abs(Input.GetAxis("Horizontal")));
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, new Vector3(distance, transform.localPosition.y, transform.localPosition.z), speed);
+        }
     }
-
-    public void PlaySound(AudioClip sound)
-    {
-        SoundController.main.PlaySound(soundPlayer, sound);
-    }
-    #endregion
 }

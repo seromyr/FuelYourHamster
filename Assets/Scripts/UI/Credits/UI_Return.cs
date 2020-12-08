@@ -3,28 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Return : MonoBehaviour
+public class UI_Return : MonoBehaviour, IAudible
 {
     private Button button;
-    private AudioSource soundPlayer;
 
     private void Start()
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(Return);
 
-        soundPlayer = SoundController.main.CreateASoundPlayer(transform);
+        SoundSetup();
     }
     public void Return()
     {
         UI_MainMenu.main.FadeIn(1);
         UI_Credits.main.FadeOut();
         UI_Credits.main.SelfScroller.ScrollReset();
-        PlaySound();
+        PlaySound(SoundController.main.SoundLibrary[0]);
     }
 
-    private void PlaySound()
+    #region Interfaces Implementation
+    private AudioSource soundPlayer;
+    public void SoundSetup()
     {
-        SoundController.main.PlaySound(soundPlayer, SoundController.main.SoundLibrary[0]);
+        soundPlayer = SoundController.main.CreateASoundPlayer(transform);
     }
+
+    public void PlaySound(AudioClip sound)
+    {
+        SoundController.main.PlaySound(soundPlayer, sound);
+    }
+    #endregion
 }

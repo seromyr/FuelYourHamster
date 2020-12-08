@@ -108,6 +108,11 @@ public class SoundController : MonoBehaviour
         if (musicLibrary != null) musicSource.Play();
     }
 
+    public void StopBGM()
+    {
+        if (musicSource.isPlaying) musicSource.Stop();
+    }
+
     public void SwitchSoundState()
     {
         switch (soundState)
@@ -143,7 +148,11 @@ public class SoundController : MonoBehaviour
 
     public void PlaySound(AudioSource soundPlayer,AudioClip sound)
     {
-        soundPlayer.clip = sound;
-        soundPlayer.Play();
+        //soundPlayer.clip = sound;
+        //soundPlayer.Play();
+
+        // Play multiple sounds at once with 1 audio source
+        // Limitation: 10 - 12 sounds
+        soundPlayer.PlayOneShot(sound);
     }
 }

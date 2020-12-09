@@ -83,7 +83,7 @@ public class SimplePatrol : MonoBehaviour
 
     private void ActivateTheMovement(object sender, EventArgs e)
     {
-        StartCoroutine(SetPatrolActiveWithDelay(5, true));
+        StartCoroutine(SetPatrolActiveWithDelay(6, true));
     }
     private IEnumerator SetPatrolActiveWithDelay(float delay, bool state)
     {

@@ -17,14 +17,13 @@ public class PlayerMechanic : MonoBehaviour
 
     private void Start()
     {
-        coffeePerServing = 20; // For cheating, remember to remove before gold
+        //coffeePerServing = 20; // For cheating, remember to remove before gold
 
         // Player start with some caffeine in its blood
         Player.main.FullLoadFuel();
 
         // Initialize color effects
         Player.main.SpriteRenderer.color = Color.white;
-
     }
 
     private void Update()
@@ -66,12 +65,14 @@ public class PlayerMechanic : MonoBehaviour
 
     private bool AskForCoffee()
     {
-        return Input.GetKeyDown(KeyCode.Return);
+        //return Input.GetKeyDown(KeyCode.Return);
+        return false;
     }
 
     private bool VomitCoffee()
     {
-        return Input.GetKeyDown(KeyCode.Backspace);
+        //return Input.GetKeyDown(KeyCode.Backspace);
+        return false;
     }
 
     private IEnumerator ColorSwitch(Color colorBase, Color colorCollision)

@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
         Player.main.SetFund(CONST.PLAYER_DEFAULT_MONEY);
 
         targetGameState = GameState.Start;
-        //targetGameState = GameState.New;
         gameStateUpdating = true;
         LoadRoutine();
     }

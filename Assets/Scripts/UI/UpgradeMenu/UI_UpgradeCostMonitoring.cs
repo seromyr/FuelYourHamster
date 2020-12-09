@@ -8,22 +8,33 @@ public class UI_UpgradeCostMonitoring : MonoBehaviour
 {
     private int statID;
     private Text textField;
+    private Color enableColor, disableColor;
 
     void Start()
     {
         textField = GetComponent<Text>();
         GetUpgradeStatID();
+
+        ColorUtility.TryParseHtmlString("#926143FF", out enableColor);
+        ColorUtility.TryParseHtmlString("#9AB9D1FF", out disableColor);
     }
 
     void Update()
     {
-        if (UpgradeData.main.Stats[statID].cost == -1)
+        if (UpgradeData.main.CheckUpgradeIsAlreadyMax(statID))
         {
             textField.text = "MAX";
+            textField.color = disableColor;
+        }
+        else if (!GameManager.main.AllowUpgradePurchasing(statID))
+        {
+            textField.color = disableColor;
+            textField.text = AddSeperatorInLargeNumber(UpgradeData.main.Stats[statID].cost);
         }
         else
         {
             textField.text = AddSeperatorInLargeNumber(UpgradeData.main.Stats[statID].cost);
+            textField.color = enableColor;
         }
     }
 

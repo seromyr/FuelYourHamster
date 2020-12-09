@@ -6,18 +6,40 @@ using Constants;
 
 public class UI_UpgradeLevelMonitoring : MonoBehaviour
 {
-    private Image image;
+    private Image image, frameImage;
     private int statID;
+    private Color enableColor, disableColor;
 
     void Start()
     {
         TryGetComponent(out image);
         GetUpgradeStatID();
+
+        transform.parent.TryGetComponent(out frameImage);
+
+        ColorUtility.TryParseHtmlString("#926143FF", out enableColor);
+        ColorUtility.TryParseHtmlString("#9AB9D1FF", out disableColor);
     }
 
     void Update()
     {
         image.fillAmount = (float)UpgradeData.main.Stats[statID].level / UpgradeData.main.Stats[statID].maxLevel;
+
+        if (UpgradeData.main.CheckUpgradeIsAlreadyMax(statID))
+        {
+            //image.color = disableColor;
+            frameImage.color = disableColor;
+        }
+        else if (!GameManager.main.AllowUpgradePurchasing(statID))
+        {
+            //image.color = disableColor;
+            frameImage.color = disableColor;
+        }
+        else
+        {
+            image.color = enableColor;
+            frameImage.color = Color.white;
+        }
     }
 
     private void GetUpgradeStatID()

@@ -45,8 +45,8 @@ public class UpgradeData : MonoBehaviour
         stats[0] = new UpgradeStat()
         {
             name = "Fuel Efficiency",
-            description = "Upgrade to reduce fuel consuming speed",
-            cost = 50,
+            description = "Slower fuel decreasing",
+            cost = 10,
             nextCost = 0,
             maxLevel = 5,
             level = 0,
@@ -56,8 +56,8 @@ public class UpgradeData : MonoBehaviour
         stats[1] = new UpgradeStat()
         {
             name = "Max Health",
-            description = "Upgrade to increase obstacle damage endurance",
-            cost = 15,
+            description = "Extra hearts at start",
+            cost = 20,
             nextCost = 0,
             maxLevel = 5,
             level = 0,
@@ -67,8 +67,8 @@ public class UpgradeData : MonoBehaviour
         stats[2] = new UpgradeStat()
         {
             name = "Max Fuel",
-            description = "Upgrade to increase the ability to run longer",
-            cost = 100,
+            description = "More fuel to run",
+            cost = 30,
             nextCost = 0,
             maxLevel = 10,
             level = 0,
@@ -78,8 +78,8 @@ public class UpgradeData : MonoBehaviour
         stats[3] = new UpgradeStat()
         {
             name = "Hamster Ball",
-            description = "Upgrade to block more damage from obstacles",
-            cost = 225,
+            description = "Extra collision protection",
+            cost = 120,
             nextCost = 0,
             maxLevel = 2,
             level = 0,
@@ -89,8 +89,8 @@ public class UpgradeData : MonoBehaviour
         stats[4] = new UpgradeStat()
         {
             name = "Money Magnet",
-            description = "Upgrade to attract surrounding coins",
-            cost = 1000,
+            description = "Auto coin collecting",
+            cost = 500,
             nextCost = 0,
             maxLevel = 1,
             level = 0,

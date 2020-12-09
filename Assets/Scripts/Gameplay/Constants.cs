@@ -166,7 +166,7 @@ namespace Constants
         // Player default money                                                    
         public const int                     PLAYER_DEFAULT_MONEY                   = 100;
         // Player bonus reward money                                                    
-        public const int                     PLAYER_BONUS_MONEY                     = 50;
+        public const int                     PLAYER_BONUS_MONEY                     = 200;
 
         public const int                     QUEST_ID_DEFAULT                       = 0;
         public const int                     QUEST_ID_MAX                           = 4;

@@ -45,11 +45,11 @@ public class QuestController : MonoBehaviour
     {
         _questText = new string[]
         {
-            "FYH",
-            "Buu",
-            "Josh",
-            "Nibbles",
-            "Fuel Your Hamster"
+            "F",
+            "B",
+            "Jo",
+            "Ni",
+            "Fu"
         };
     }
 

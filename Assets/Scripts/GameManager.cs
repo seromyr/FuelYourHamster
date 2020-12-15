@@ -420,10 +420,3 @@ public class GameManager : MonoBehaviour
         coffee_O_Meter.SetBarLevel(UpgradeData.main.Stats[2].level);
     }
 }
-
-[Serializable]
-class PlayerData
-{
-    // Placeholder
-    float currentMoney;
-}
